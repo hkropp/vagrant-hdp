@@ -1,0 +1,18 @@
+{
+	"blueprint":"vagrant-hdp22-n3",
+	"default_password": "admin",
+	"host_groups":[
+		{ 
+			"name":"master_slave_client_1",
+      		"hosts":[ { "fqdn":"one.node" } ] 
+		},
+    	{ 
+    		"name":"master_slave_2",
+			"hosts":[ { "fqdn":"two.node" } ] 
+		},
+    	{ 
+    		"name":"master_slave_3",
+			"hosts":[ { "fqdn":"three.node" } ] 
+		} 
+	]
+}

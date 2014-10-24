@@ -8,18 +8,19 @@ include ntp
 
 # Ensure that servers can find themselves even in absence of dns
 class { 'etchosts':
-  ownhostname => 'one.cluster'
+  ownhostname => 'one.node'
 }
 
 # Install and enable ambari server
 class { 'ambari_server':
-  ownhostname => 'one.cluster'
+  repo => 'http://s3.amazonaws.com/dev.hortonworks.com/ambari/centos6/1.x/updates/1.7.0/ambari.repo'
 }
 
 # Install and enable ambari agent
 class { 'ambari_agent':
-  ownhostname    => 'one.cluster',
-  serverhostname => 'one.cluster'
+  ownhostname    => 'one.node',
+  serverhostname => 'one.node',
+  repo => 'http://s3.amazonaws.com/dev.hortonworks.com/ambari/centos6/1.x/updates/1.7.0/ambari.repo'
 }
 
 # Establish ordering

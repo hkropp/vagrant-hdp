@@ -1,0 +1,102 @@
+{
+    "configurations": [
+        {
+            "global": {
+                "nagios_contact": "root@localhost" // Prior Ambari 1.6.1 this is a global config
+            }
+        },{
+            "nagios-env": {
+                "nagios_contact": "root@localhost" // Post Ambari 1.6.1 this is no longer a global 
+            }
+        },{
+            "mapred-site": {}
+        },{
+            "core-site": {}
+        },{
+            "hdfs-site" : {}
+        },{
+            "yarn-site": {}
+        },{
+            "capacity-scheduler": {}
+        },{
+            "hadoop-policy": {}
+        },{
+            "hdfs-log4j": {}
+        },{
+            "mapred-queue-acls": {}
+        },{
+            "mapred-site": {}
+        },{
+            "yarn-log4j": {}
+        },{
+            "zookeeper-log4j": {}
+        }
+    ],
+    "host_groups":[{
+        "name": "host_group_1",
+        "components": [
+            // master
+            { "name": "NAMENODE" },             // category: MASTER, service: HDFS
+            { "name": "SECONDARY_NAMENODE" },   // category: MASTER, service: HDFS
+            { "name": "SNAMENODE" },            // category: MASTER, service: HDFS
+            { "name": "JOURNALNODE" },          // category: MASTER, service: HDFS
+            { "name": "JOBTRACKER" },           // category: MASTER, service: MAPREDUCE
+            { "name": "ZOOKEEPER_SERVER" },     // category: MASTER, service: ZOOKEEPER
+            { "name": "HIVE_SERVER" },          // category: MASTER, service: HIVE
+            { "name": "HIVE_METASTORE" },       // category: MASTER, service: HIVE
+            { "name": "MYSQL_SERVER" },         // category: MASTER, service: HIVE
+            { "name": "HBASE_MASTER" },         // category: MASTER, service: HBASE
+            { "name": "NAGIOS_SERVER" },        // category: MASTER, service: NAGIOS
+            { "name": "GANGLIA_SERVER" },       // category: MASTER, service: GANGLIA
+            { "name": "OOZIE_SERVER" },         // category: MASTER, service: OOZIE
+            { "name": "WEBHCAT_SERVER" },       // category: MASTER, service: WEBHCAT
+            { "name": "HUE_SERVER" },
+            { "name": "HISTORYSERVER" },        // category: MASTER, service: MAPREDUCE2
+            { "name": "FALCON_SERVER" },        // category: MASTER, service: FALCON
+            { "name": "NIMBUS" },               // category: MASTER, service: STORM
+            { "name": "STORM_UI_SERVER" },      // category: MASTER, service: STORM
+            { "name": "DRPC_SERVER" },          // category: MASTER, service: STORM
+            { "name": "STORM_REST_API" },       // category: MASTER, service: STORM
+            { "name": "RESOURCEMANAGER" },      // category: MASTER, service: YARN
+            { "name": "APP_TIMELINE_SERVER"},   // category: MASTER, service: YARN
+            // slaves
+            { "name": "DATANODE" },             // category: SLAVE, service: HDFS
+            { "name": "TASKTRACKER" },          // category: SLAVE, service: MAPREDUCE
+            { "name": "HBASE_REGIONSERVER" },   // category: SLAVE, service: HBASE
+            { "name": "GANGLIA_MONITOR" },      // category: SLAVE, service: GANGLIA
+            { "name": "NODEMANAGER" },          // category: SLAVE, service: YARN
+            { "name": "ZKFC" },                 // category: SLAVE, service: HDFS
+            { "name": "SUPERVISOR" },           // category: SLAVE, service: STORM
+            { "name": "FLUME_HANDLER" },        // category: SLAVE, service: FLUME
+            // clients
+            { "name": "HDFS_CLIENT" },          // category: CLIENT, service: HDFS
+            { "name": "MAPREDUCE2_CLIENT" },    // category: CLIENT, service: MAPREDUCE2
+            { "name": "MAPREDCUE_CLIENT" }      // category: CLIENT, service: MAPREDUCE
+            { "name": "YARN_CLIENT" },          // category: CLIENT, service: YARN
+            { "name": "FALCON_CLIENT" },        // category: CLIENT, service: FALCON
+            { "name": "HBASE_CLIENT" },         // category: CLIENT, service: HBASE
+            { "name": "HIVE_CLIENT" },          // category: CLIENT, service: HIVE
+            { "name": "TEZ_CLIENT" },           // category: CLIENT, service: TEZ
+            { "name": "HCAT" },                 // category: CLIENT, service: HCATALOG
+            { "name": "SLIDER" },               // category: CLIENT, service: SLIDER
+            { "name": "OOZIE_CLIENT" },         // category: CLIENT, service: OOZIE
+            { "name": "PIG" },                  // category: CLIENT, service: PIG
+            { "name": "SQOOP" },                // category: CLIENT, service: SQOOP
+            { "name": "ZOOKEEPER_CLIENT" },     // category: CLIENT, service: ZOOKEEPER
+            { "name": "GLUSTERFS_CLIENT" }      // category: CLIENT, service: GLUSTERFS
+        ],
+        // configurations here are applied at host level to each host in group
+        "configurations": [ 
+            {
+                "configuration-type": {
+                    "property-name": "property-value"
+                }
+            }
+        ],
+        "cardinality": "1"
+    }],
+    "Blueprints": {
+        "stack_name": "HDP",
+        "stack_version": "2.1"
+    }
+}

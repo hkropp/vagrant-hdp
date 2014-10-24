@@ -1,21 +1,27 @@
 # Ensure that the machines in the cluster can find each other without DNS
 class etchosts ($ownhostname) {
   host { 'host_one':
-    name  => 'one.cluster',
-    alias => ['one', 'one.cluster'],
-    ip    => '192.168.0.101'
+    name  => 'one.node',
+    alias => ['one', 'one.node'],
+    ip    => '192.168.0.100'
   }
 
   host { 'host_two':
-    name  => 'two.cluster',
-    alias => ['two', 'two.cluster'],
+    name  => 'two.node',
+    alias => ['two', 'two.node'],
     ip    => '192.168.0.102'
   }
 
   host { 'host_three':
-    name  => 'three.cluster',
-    alias => ['three', 'three.cluster'],
-    ip    => '192.168.0.103'
+    name => 'three.node',
+    alias => ['three', 'three.node'],
+    ip => '192.168.0.103'
+  }
+
+  host { 'host_four':
+    name => 'four.node',
+    alias => ['four', 'four.node'],
+    ip => '192.168.0.104'
   }
 
   file { 'agent_hostname':
@@ -32,5 +38,4 @@ class etchosts ($ownhostname) {
     replace => true,
     content => "NETWORKING=yes \nHOSTNAME=${ownhostname}" # own hostname
   }
-
 }
