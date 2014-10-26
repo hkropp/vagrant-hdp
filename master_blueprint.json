@@ -59,6 +59,7 @@
             { "name": "STORM_REST_API" },       // category: MASTER, service: STORM
             { "name": "RESOURCEMANAGER" },      // category: MASTER, service: YARN
             { "name": "APP_TIMELINE_SERVER"},   // category: MASTER, service: YARN
+            { "name": "KNOX_GATEWAY" },         // category: MASTER, service: KNOX
             // slaves
             { "name": "DATANODE" },             // category: SLAVE, service: HDFS
             { "name": "TASKTRACKER" },          // category: SLAVE, service: MAPREDUCE

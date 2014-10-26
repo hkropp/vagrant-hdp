@@ -31,7 +31,7 @@
             	{ "name": "HBASE_REGIONSERVER" },
             	{ "name": "GANGLIA_MONITOR" },
             	{ "name": "NODEMANAGER" },
-            	{ "name": "ZKFC" },
+            	
             	{ "name": "SUPERVISOR" },
             	{ "name": "FLUME_HANDLER" },
             	
