@@ -1,0 +1,10 @@
+---
+.travis.yml:
+  secure_global_env:
+    # PUBLISHER_PASSWORD
+    - "Pj3X5Ifwezh49UlBm/EakxqA9i73i726g5QnkyRF6wSilxKFi9QxVuSZMtdlVlM7TPeUSmk0T2ncKGpxtT0/rzvJ2dO/Rg7McuyrqfzC22oJCNYsbD1GVEzi8yOJnhb7wzHX0g0OqcMR2Xpqz7JrnRcWODnHR9te9FysRj7hCFg="
+Gemfile:
+  optional:
+  - gem: serverspec
+  - gem: beaker
+  - gem: beaker-rspec

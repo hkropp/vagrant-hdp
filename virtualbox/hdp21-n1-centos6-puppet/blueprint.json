@@ -1,0 +1,65 @@
+{
+	"Blueprints" : 
+		{
+    		"blueprint_name" : "vagrant-hdp21-n3",
+    		"stack_name" : "HDP",
+    		"stack_version" : "2.1"
+    	},
+	"configurations": [
+		{ 
+			"global": {
+				"nagios_contact": "root@one.node"
+			}
+    	}
+    ],
+	"host_groups" : [
+		{ 
+			"name" : "master_slave_client_1",
+			"cardinality" : "1",
+      		"components" : [
+      			{ "name": "NAMENODE" },
+      			{ "name": "ZOOKEEPER_SERVER" },
+      			{ "name": "HBASE_MASTER" },
+      			{ "name": "NAGIOS_SERVER" },
+      			{ "name": "GANGLIA_SERVER" },
+      			{ "name": "OOZIE_SERVER" },
+      			{ "name": "WEBHCAT_SERVER" },
+      			{ "name": "FALCON_SERVER" },
+      			{ "name": "APP_TIMELINE_SERVER"},
+      			
+            	{ "name": "DATANODE" },
+            	{ "name": "HBASE_REGIONSERVER" },
+            	{ "name": "GANGLIA_MONITOR" },
+            	{ "name": "NODEMANAGER" },
+            	{ "name": "SUPERVISOR" },
+            	{ "name": "FLUME_HANDLER" },
+            	
+            	{ "name": "HDFS_CLIENT" },
+            	{ "name": "MAPREDUCE2_CLIENT" },
+            	{ "name": "YARN_CLIENT" },
+            	{ "name": "FALCON_CLIENT" },
+            	{ "name": "HBASE_CLIENT" },
+            	{ "name": "HIVE_CLIENT" },
+            	{ "name": "TEZ_CLIENT" },
+            	{ "name": "HCAT" },
+            	{ "name": "OOZIE_CLIENT" },
+            	{ "name": "PIG" },
+            	{ "name": "SQOOP" },
+            	{ "name": "ZOOKEEPER_CLIENT" },
+      			
+                { "name": "SECONDARY_NAMENODE" },   
+				{ "name": "ZOOKEEPER_CLIENT" },
+				{ "name": "NIMBUS" },               
+            	{ "name": "STORM_UI_SERVER" },     
+            	{ "name": "DRPC_SERVER" },          
+            	{ "name": "STORM_REST_API" },
+            	
+      			{ "name": "RESOURCEMANAGER" }, 
+      			{ "name": "HISTORYSERVER" },        
+        		{ "name": "HIVE_SERVER" },          
+            	{ "name": "HIVE_METASTORE" },       
+            	{ "name": "MYSQL_SERVER" },
+        	]
+        }
+    ] 
+}

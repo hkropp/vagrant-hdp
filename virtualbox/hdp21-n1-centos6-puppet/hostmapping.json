@@ -1,0 +1,10 @@
+{
+	"blueprint":"vagrant-hdp21-n3",
+	"default_password": "admin",
+	"host_groups":[
+		{ 
+			"name":"master_slave_client_1",
+      		"hosts":[ { "fqdn":"one.node" } ] 
+		}
+	]
+}
