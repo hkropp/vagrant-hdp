@@ -1,7 +1,7 @@
 {
 	"Blueprints" : 
 		{
-    		"blueprint_name" : "vagrant-hdp21-n3",
+    		"blueprint_name" : "vagrant-hdp21",
     		"stack_name" : "HDP",
     		"stack_version" : "2.1"
     	},
@@ -58,7 +58,7 @@
       			{ "name": "HISTORYSERVER" },        
         		{ "name": "HIVE_SERVER" },          
             	{ "name": "HIVE_METASTORE" },       
-            	{ "name": "MYSQL_SERVER" },
+            	{ "name": "MYSQL_SERVER" }
         	]
         }
     ] 
