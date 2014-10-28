@@ -1,7 +1,7 @@
 {
 	"Blueprints" : 
 		{
-    		"blueprint_name" : "vagrant-hdp22-n3",
+    		"blueprint_name" : "vagrant-hdp22-n1",
     		"stack_name" : "HDP",
     		"stack_version" : "2.2"
     	},
@@ -26,8 +26,12 @@
       			{ "name": "WEBHCAT_SERVER" },
       			{ "name": "FALCON_SERVER" },
       			{ "name": "APP_TIMELINE_SERVER"},
+                { "name": "NIMBUS" },
+                { "name": "STORM_UI_SERVER" },
+                { "name": "DRPC_SERVER" },
       			
             	{ "name": "DATANODE" },
+                { "name": "SUPERVISOR" },
             	{ "name": "HBASE_REGIONSERVER" },
             	{ "name": "GANGLIA_MONITOR" },
             	{ "name": "NODEMANAGER" },
