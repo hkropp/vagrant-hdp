@@ -4,15 +4,15 @@
 	"host_groups":[
 		{ 
 			"name":"master_slave_client_1",
-      		"hosts":[ { "fqdn":"one.node" } ] 
+      		"hosts":[ { "fqdn":"one.hdp" } ] 
 		},
     	{ 
     		"name":"master_slave_2",
-			"hosts":[ { "fqdn":"two.node" } ] 
+			"hosts":[ { "fqdn":"two.hdp" } ] 
 		},
     	{ 
     		"name":"master_slave_3",
-			"hosts":[ { "fqdn":"three.node" } ] 
+			"hosts":[ { "fqdn":"three.hdp" } ] 
 		} 
 	]
 }
