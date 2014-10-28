@@ -1,55 +1,58 @@
-# Vagrantfile API/syntax version. Don't touch unless you know what you're doing!
+# -*- mode: ruby -*-
+# # vi: set ft=ruby :
 VAGRANTFILE_API_VERSION = "2"
 
-MANIFESTS_PATH = "manifest"
-MODULES_PATH = "../../puppet/modules"
+BOX="puppetlabs/centos-6.5-64-puppet"
+BOX_URL="http://developer.nrel.gov/downloads/vagrant-boxes/CentOS-6.4-x86_64-v20130731.box"
+
+MANIFESTS_PATH='manifest'
+MODULES_PATH='../../puppet/modules'
+
+HDP_AMBARI_REPO="http://s3.amazonaws.com/public-repo-1.hortonworks.com/HDP-LABS/Projects/Champlain-Preview/ambari/1.7.0-5/centos6/ambari.repo"
+
+nodes = [
+    {:name => :one, :cpu => 1, :mem => 2048, :ip => "192.168.0.100"},
+    {:name => :two, :cpu => 1, :mem => 2048, :ip => "192.168.0.101"},
+    {:name => :three, :cpu => 1, :mem => 2048, :ip => "192.168.0.102"}
+]
+
+HOST_TLD = "hdp"
+AMBARI_HOST_NAME = "one.%s" % HOST_TLD
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
-  config.vm.box = "puppetlabs/centos-6.5-64-puppet"
-  config.vm.box_url = "http://developer.nrel.gov/downloads/vagrant-boxes/CentOS-6.4-x86_64-v20130731.box"
+  config.vm.box = BOX
+  config.vm.box_url = BOX_URL
   
-  config.vm.define :host_one do |host_one| 
-    host_one.vm.hostname = "one.node"
-    host_one.vm.network :private_network, ip: "192.168.0.100"
-    host_one.vm.provider :virtualbox do |vb|
-      vb.customize ["modifyvm", :id, "--memory", 3072]
-    end
+  nodes.each do |opts|
+    config.vm.define opts[:name] do |config| 
+        config.vm.hostname = "%s.%s" % [opts[:name].to_s, HOST_TLD]
+        config.vm.network :private_network, ip: opts[:ip]
+        config.vm.provider :virtualbox do |vb|
+            vb.customize ["modifyvm", :id, "--cpus", opts[:cpu] ] if opts[:cpu]
+            vb.customize ["modifyvm", :id, "--memory", opts[:mem] || 2048 ]
+        end
 
-    host_one.vm.network "forwarded_port", guest: 8080, host: 8080
+        config.vm.provision :hosts do |provisioner|
+            provisioner.autoconfigure = false
+            provisioner.add_localhost_hostnames = false
+            nodes.each do |n|
+                provisioner.add_host n[:ip], [ n[:name].to_s, "%s.%s" % [ n[:name].to_s, HOST_TLD ] ]
+            end
+        end
 
-    host_one.vm.provision "puppet" do |puppet|
-      puppet.manifests_path = MANIFESTS_PATH
-      puppet.module_path = MODULES_PATH
-      puppet.manifest_file = "host_one.pp"
-    end
-  end
+        config.vm.network "forwarded_port", guest: 8080, host: 8080, auto_correct: true if "%s.%s" % [ opts[:name].to_s, HOST_TLD ] == AMBARI_HOST_NAME
 
-  config.vm.define :host_two do |host_two| 
-    host_two.vm.hostname = "two.node"
-    host_two.vm.network :private_network, ip: "192.168.0.102"
-    host_two.vm.provider :virtualbox do |vb|
-      vb.customize ["modifyvm", :id, "--memory", 3072]
-    end
-
-    host_two.vm.provision "puppet" do |puppet|
-      puppet.manifests_path = MANIFESTS_PATH
-      puppet.module_path = MODULES_PATH 
-      puppet.manifest_file = "host_two.pp"
-    end
-  end
-  
-  config.vm.define :host_three do |host_three| 
-    host_three.vm.hostname = "three.node"
-    host_three.vm.network :private_network, ip: "192.168.0.103"
-    host_three.vm.provider :virtualbox do |vb|
-      vb.customize ["modifyvm", :id, "--memory", 3072]
-    end
-    
-    host_three.vm.provision "puppet" do |puppet|
-      puppet.manifests_path = MANIFESTS_PATH
-      puppet.module_path = MODULES_PATH
-      puppet.manifest_file = "host_three.pp"
+        config.vm.provision "puppet" do |puppet|
+            puppet.manifests_path = MANIFESTS_PATH
+            puppet.module_path = MODULES_PATH
+            puppet.manifest_file = "%s.pp" % opts[:name].to_s
+            puppet.facter = {
+                "hdp_ambari_repo" => HDP_AMBARI_REPO,
+                "ownhostname" => "%s.%s" % [opts[:name].to_s, HOST_TLD],
+                "ambarihostname" => AMBARI_HOST_NAME
+            }
+        end
     end
   end
 end
