@@ -10,6 +10,8 @@ A collection of Vagrant scripts to setup HDP clusters.
 3. Vagrant Plugins:
 * [Vagrant Hosts](https://github.com/adrienthebo/vagrant-hosts)
     vagrant plugin install vagrant-hosts
+* [Vagrant Cachier (for Repo caching)](https://github.com/fgrehm/vagrant-cachier)
+    vagrant plugin install vagrant-cachier
 * Vagrant Openstack (optional)
 
 ## Environments
