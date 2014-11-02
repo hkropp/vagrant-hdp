@@ -1,8 +1,9 @@
-# Turn off interfering services
 include interfering_services
-
-# Install and enable ntp
 include ntp
+
+class {'etchosts':
+    ownhostname => $ownhostname
+}
 
 class { 'ambari_agent':
   serverhostname => $ambarihostname,
@@ -11,4 +12,5 @@ class { 'ambari_agent':
 }
 
 # Establish ordering
-Class['interfering_services'] -> Class['ntp'] -> Class['ambari_agent']
+Class['interfering_services'] -> Class['ntp'] -> Class['etchosts'] -> Class['ambari_agent']
+
