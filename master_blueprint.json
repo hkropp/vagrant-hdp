@@ -2,11 +2,15 @@
     "configurations": [
         {
             "global": {
-                "nagios_contact": "root@localhost" // Prior Ambari 1.6.1 this is a global config
+                "nagios_contact": "root@localhost", // Prior Ambari 1.6.1 this is a global config
+                "nagios_web_login": "nagiosadmin",
+                "nagios_web_password": "admin"
             }
         },{
             "nagios-env": {
-                "nagios_contact": "root@localhost" // Post Ambari 1.6.1 this is no longer a global 
+                "nagios_contact": "root@localhost", // Post Ambari 1.6.1 this is no longer a global 
+                "nagios_web_login": "nagiosadmin",
+                "nagios_web_password": "admin"
             }
         },{
             "mapred-site": {}
