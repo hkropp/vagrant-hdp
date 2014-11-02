@@ -1,18 +1,18 @@
 # -*- mode: ruby -*-
 # # vi: set ft=ruby :
-VAGRANTFILE_API_VERSION = "2"
-
 BOX="puppetlabs/centos-6.5-64-puppet"
 BOX_URL="http://developer.nrel.gov/downloads/vagrant-boxes/CentOS-6.4-x86_64-v20130731.box"
-
-MANIFESTS_PATH='manifest'
-MODULES_PATH='../../puppet/modules'
 
 HDP_AMBARI_REPO="http://public-repo-1.hortonworks.com/ambari/centos6/1.x/updates/1.6.1/ambari.repo"
 
 nodes = [
-    {:name => :one, :cpu => 2, :mem => 5120, :ip => "192.168.0.100"}
+    {:name => :one, :cpu => 2, :mem => 5120, :ip => "192.168.33.100"}
 ]
+
+VAGRANTFILE_API_VERSION = "2"
+
+MANIFESTS_PATH='../manifests'
+MODULES_PATH='../../puppet/modules'
 
 HOST_TLD = "hdp"
 AMBARI_HOST_NAME = "one.%s" % HOST_TLD
@@ -22,7 +22,25 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.box = BOX
   config.vm.box_url = BOX_URL
   
-  i = 100
+  if Vagrant.has_plugin?("vagrant-cachier")
+    # Configure cached packages to be shared between instances of the same base box.
+    # More info on http://fgrehm.viewdocs.io/vagrant-cachier/usage
+    config.cache.scope = :box
+    
+    # OPTIONAL: If you are using VirtualBox, you might want to use that to enable
+    # NFS for shared folders. This is also very useful for vagrant-libvirt if you
+    # want bi-directional sync
+    config.cache.synced_folder_opts = {
+      type: :nfs,
+      # The nolock option can be useful for an NFSv3 client that wants to avoid the
+      # NLM sideband protocol. Without this option, apt-get might hang if it tries
+      # to lock files needed for /var/cache/* operations. All of this can be avoided
+      # by using NFSv4 everywhere. Please note that the tcp option is not the default.
+      mount_options: ['rw', 'vers=3', 'tcp', 'nolock']
+    }
+    # For more information please check http://docs.vagrantup.com/v2/synced-folders/basic_usage.html
+  end
+  
   nodes.each do |opts|
     config.vm.define opts[:name] do |config| 
         config.vm.hostname = "%s.%s" % [opts[:name].to_s, HOST_TLD]
@@ -36,11 +54,11 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
             provisioner.autoconfigure = false
             provisioner.add_localhost_hostnames = false
             nodes.each do |n|
-                provisioner.add_host n[:ip], [n[:name].to_s, "%s.hdp" % n[:name].to_s]
+                provisioner.add_host n[:ip], [ n[:name].to_s, "%s.%s" % [ n[:name].to_s, HOST_TLD ] ]
             end
         end
 
-        config.vm.network "forwarded_port", guest: 8080, host: 8080, auto_correct: true
+        config.vm.network "forwarded_port", guest: 8080, host: 8080, auto_correct: true if "%s.%s" % [ opts[:name].to_s, HOST_TLD ] == AMBARI_HOST_NAME
 
         config.vm.provision "puppet" do |puppet|
             puppet.manifests_path = MANIFESTS_PATH
@@ -53,6 +71,5 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
             }
         end
     end
-    i = i + 1
   end
 end
