@@ -6,6 +6,10 @@ include interfering_services
 # Install and enable ntp
 include ntp
 
+class {'etchosts':
+    ownhostname => $ownhostname
+}
+
 class { 'ambari_agent':
   serverhostname => $ambarihostname,
   ownhostname    => $ownhostname,
