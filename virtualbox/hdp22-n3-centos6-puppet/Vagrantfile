@@ -40,7 +40,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       # by using NFSv4 everywhere. Please note that the tcp option is not the default.
       mount_options: ['rw', 'vers=3', 'tcp', 'nolock']
     }
-    # For more information please check http://docs.vagrantup.com/v2/synced-folders/basic_usage.html
+    
   end
   
   nodes.each do |opts|
@@ -56,7 +56,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
             provisioner.autoconfigure = false
             provisioner.add_localhost_hostnames = false
             nodes.each do |n|
-                provisioner.add_host n[:ip], [ n[:name].to_s, "%s.%s" % [ n[:name].to_s, HOST_TLD ] ]
+                provisioner.add_host n[:ip], [ "%s.%s" % [ n[:name].to_s, HOST_TLD ], n[:name].to_s ]
             end
         end
 

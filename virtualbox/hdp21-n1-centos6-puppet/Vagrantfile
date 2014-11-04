@@ -54,7 +54,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
             provisioner.autoconfigure = false
             provisioner.add_localhost_hostnames = false
             nodes.each do |n|
-                provisioner.add_host n[:ip], [ n[:name].to_s, "%s.%s" % [ n[:name].to_s, HOST_TLD ] ]
+                provisioner.add_host n[:ip], [ "%s.%s" % [ n[:name].to_s, HOST_TLD ], n[:name].to_s ]
             end
         end
 
