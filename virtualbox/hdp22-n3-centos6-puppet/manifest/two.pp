@@ -13,5 +13,5 @@ class { 'ambari_agent':
 }
 
 # Establish ordering
-Class['interfering_services'] -> Class['ntp'] -> Class['ambari_agent']
+Class['interfering_services'] -> Class['ntp'] -> Class['etchosts'] -> Class['ambari_agent']
 

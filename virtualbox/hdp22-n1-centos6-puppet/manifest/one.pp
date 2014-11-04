@@ -32,5 +32,5 @@ class { 'ambari_agent':
 #include ambari_repolist
 
 # Establish ordering
-Class['interfering_services'] -> Class['ntp'] -> Class['ambari_server'] -> Class['ambari_agent']
+Class['interfering_services'] -> Class['ntp'] -> Class['etchosts'] -> Class['ambari_server'] -> Class['ambari_agent']
 #-> Class['ambari_repolist']
