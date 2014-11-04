@@ -14,9 +14,10 @@ class ambari_server ($repo) {
   package { 'ambari-server':
     ensure  => present,
     require => Exec[get-ambari-server-repo]
-  } -> 
+  }
   
-  augeas { 'repolist.xml':
+  augeas { 'repolist':
+    require => Package[ambari-server],
     lens => "Xml.lns",
     incl => '/var/lib/ambari-server/resources/stacks/HDP/2.2/repos/repoinfo.xml',
     onlyif => "match dir[. = '/var/lib/ambari-server/resources/stacks/HDP/2.2/repos'] size != 0",
@@ -30,7 +31,7 @@ class ambari_server ($repo) {
   exec { 'ambari-setup':
     command => "ambari-server setup -s",
     user    => root,
-    require => Package[ambari-server]
+    require => Augeas[repolist]
   }
 
   service { 'ambari-server':
