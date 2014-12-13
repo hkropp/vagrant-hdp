@@ -8,7 +8,8 @@ BOX_URL="http://developer.nrel.gov/downloads/vagrant-boxes/CentOS-6.4-x86_64-v20
 MANIFESTS_PATH='manifest'
 MODULES_PATH='../../puppet/modules'
 
-HDP_AMBARI_REPO="http://public-repo-1.hortonworks.com/HDP-LABS/Projects/Champlain-Preview/ambari/1.7.0-6/centos6/ambari.repo"
+#HDP_AMBARI_REPO="http://public-repo-1.hortonworks.com/HDP-LABS/Projects/Champlain-Preview/ambari/1.7.0-7/centos6/ambari.repo"
+HDP_AMBARI_REPO="http://public-repo-1.hortonworks.com/ambari/centos6/1.x/updates/1.7.0/ambari.repo"
 
 nodes = [
     {:name => :one, :cpu => 1, :mem => 2048, :ip => "192.168.33.100"},
@@ -52,6 +53,10 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
         config.vm.network "forwarded_port", guest: 8080, host: 8080, auto_correct: true if "%s.%s" % [ opts[:name].to_s, HOST_TLD ] == AMBARI_HOST_NAME
 
+		config.vm.provision "shell", inline: "sudo mkdir -p /var/lib/ambari-server/resources && sudo chown root:vagrant /var/lib/ambari-server/resources && chmod 775 /var/lib/ambari-server/resources"
+        config.vm.provision "file", source: "../../files/jdk-7u67-linux-x64.tar.gz", destination: "/var/lib/ambari-server/resources/jdk-7u67-linux-x64.tar.gz"
+		config.vm.provision "shell", inline: "sudo chown root:root /var/lib/ambari-server/resources && sudo chmod 755 /var/lib/ambari-server/resources"
+		
         config.vm.provision "puppet" do |puppet|
             puppet.manifests_path = MANIFESTS_PATH
             puppet.module_path = MODULES_PATH

@@ -3,10 +3,11 @@
 BOX="puppetlabs/centos-6.5-64-puppet"
 BOX_URL="http://developer.nrel.gov/downloads/vagrant-boxes/CentOS-6.4-x86_64-v20130731.box"
 
-HDP_AMBARI_REPO="http://public-repo-1.hortonworks.com/HDP-LABS/Projects/Champlain-Preview/ambari/1.7.0-6/centos6/ambari.repo"
+#HDP_AMBARI_REPO="http://public-repo-1.hortonworks.com/HDP-LABS/Projects/Champlain-Preview/ambari/1.7.0-6/centos6/ambari.repo"
+HDP_AMBARI_REPO="http://public-repo-1.hortonworks.com/ambari/centos6/1.x/updates/1.7.0/ambari.repo"
 
 nodes = [
-    {:name => :one, :cpu => 1, :mem => 4096, :ip => "192.168.33.100"},
+    {:name => :one, :cpu => 1, :mem => 4096, :ip => "192.168.33.101"},
 ]
 
 VAGRANTFILE_API_VERSION = "2"
