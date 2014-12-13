@@ -56,7 +56,9 @@
 				{ "name": "ZOOKEEPER_CLIENT" },
 				{ "name": "NIMBUS" },               
             	{ "name": "STORM_UI_SERVER" },     
-            	{ "name": "DRPC_SERVER" },          
+            	{ "name": "DRPC_SERVER" },
+            	
+            	{ "name": "KNOX_GATEWAY" },         
             	
             	{ "name": "DATANODE" },
             	{ "name": "HBASE_REGIONSERVER" },
@@ -75,6 +77,8 @@
         		{ "name": "HIVE_SERVER" },          
             	{ "name": "HIVE_METASTORE" },       
             	{ "name": "MYSQL_SERVER" },
+            	
+            	{ "name": "SLIDER" },
             	
             	{ "name": "DATANODE" },
             	{ "name": "HBASE_REGIONSERVER" },
