@@ -1,0 +1,65 @@
+---
+- hosts: all
+  user: vagrant
+  sudo: True
+  tasks:
+    - name: Install NTP
+      yum:
+        pkg: ntp
+        state: installed
+    
+    - name: Start NTP
+      command: service ntpd start
+
+    - name: Stop iptables
+      command: service iptables stop
+
+    - name: Stop iptables6
+      command: service ip6tables stop
+
+    - name: If needed temporaly disable SELinux
+      shell: echo 0 > enforce
+      args:
+        chdir: /selinux
+        removes: enforce
+
+    - name: Disable SElinux permanetly
+      lineinfile: dest=/etc/selinux/config state=present create=no regexp='SELINUX=.*' line='SELINUX=disabled'
+
+    - name: Create hostname entry to {{ ownhostname }}
+      lineinfile: dest=/etc/hostname state=present create=yes regexp='.*' line='{{ ownhostname }}'
+
+    - name: Set networking yes
+      lineinfile: dest=/etc/sysconfig/network create=yes state=present regexp='NETWORKING=.*' line='NETWORKING=yes'
+
+    - name: Set hostname to {{ ownhostname }}
+      lineinfile: dest=/etc/sysconfig/network create=yes state=present regexp='HOSTNAME=.*' line='HOSTNAME={{ ownhostname }}'
+
+    - name: Create Ambari Repo {{ hdp_ambari_repo }}
+      command: wget {{ hdp_ambari_repo }} -O /etc/yum.repos.d/ambari.repo
+
+    - name: Clean YUM
+      command: yum clean all
+
+    - name: Install Ambari Agent
+      yum:
+        pkg: ambari-agent
+        state: installed
+
+    - name: Configure Ambari agent to register at Ambari server
+      lineinfile: dest=/etc/ambari-agent/conf/ambari-agent.ini create=no state=present regexp='hostname=.*' line='hostname={{ ambarihostname }}'
+
+- hosts: ambari_host
+  user: vagrant
+  sudo: True
+  tasks: 
+    - name: Install Ambari server
+      yum:
+        pkg: ambari-server
+        state: installed
+
+    - name: Configure Ambari server
+      command: ambari-server setup -s
+
+    - name: Start Ambari server
+      command: 'sleep 10 && ambari-server start' 
