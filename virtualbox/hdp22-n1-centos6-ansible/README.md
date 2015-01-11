@@ -1,17 +1,3 @@
-hdp22-n3-centos-puppet
+hdp22-n1-centos-ansible
 ===========
 
-## Spec
-
-* Nodes: 3
-* Stack: HDP 2.2
-* OS: CentOS 6.5
-* Provisioning: Puppet
-
-## Required
-* Install VirtualBox
-* Install Vagrant
-
-## Run
-* vagrant up
-* ./install_blueprint.sh
