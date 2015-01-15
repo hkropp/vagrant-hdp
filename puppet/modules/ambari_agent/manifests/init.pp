@@ -12,10 +12,17 @@ class ambari_agent ($ownhostname, $serverhostname, $repo) {
     user    => root
   }
 
+  exec {'upgrade-openssl': # http://hortonworks.com/community/forums/topic/ambari-agent-registration-failure-on-rhel-6-5-due-to-openssl-2/
+    command => "yum upgrade -y openssl",
+    user => root,
+    require => Exec[get-ambari-agent-repo]
+  }
+
   # Ambari Agent
   package { 'ambari-agent':
     ensure  => present,
-    require => Exec[get-ambari-agent-repo]
+    require => Exec[upgrade-openssl]
+    #require => Exec[get-ambari-agent-repo]
   }
 
   file_line { 'ambari-agent-ini-hostname':
