@@ -6,12 +6,43 @@
     		"stack_version" : "2.2"
     	},
 	"configurations": [
-		{ 
-			"nagios-env": {
-				"nagios_contact": "root@one.node"
-			}
-    	}
-    ],
+        {
+            "nagios-env": {
+                "nagios_contact": "root@localhost",
+                "nagios_web_login": "nagiosadmin",
+                "nagios_web_password": "admin"
+            }
+        },{
+            "hive-site": {
+                "javax.jdo.option.ConnectionDriverName" : "com.mysql.jdbc.Driver",
+                "javax.jdo.option.ConnectionPassword" : "hive123",
+                "javax.jdo.option.ConnectionURL" : "jdbc:mysql://localhost/hive?createDatabaseIfNotExist=true",
+                "javax.jdo.option.ConnectionUserName" : "hive"
+            }
+        },{
+            "hive-env": {
+                "hive_ambari_database": "MySQL",
+                "hive_database": "Existing MySQL Database",
+                "hive_database_type": "mysql"
+            }
+        },{
+            "oozie-site": {
+                "oozie.db.schema.name" : "oozie",
+                "oozie.service.JPAService.create.db.schema" : "true",
+                "oozie.service.JPAService.jdbc.driver" : "com.mysql.jdbc.Driver",
+                "oozie.service.JPAService.jdbc.username" : "oozie",
+                "oozie.service.JPAService.jdbc.password" : "oozie123",
+                "oozie.service.JPAService.jdbc.url" : "jdbc:mysql://localhost:3306/oozie"
+            }
+        },{
+            "oozie-env": {
+                "oozie_database": "Existing MySQL Database",
+                "oozie_existing_mysql_database": "MySQL",
+                "oozie_existing_mysql_host": "localhost"
+            }
+        }
+    ]
+    ,
 	"host_groups" : [
 		{ 
 			"name" : "master_slave_client_1",
@@ -24,14 +55,10 @@
       			{ "name": "GANGLIA_SERVER" },
       			{ "name": "OOZIE_SERVER" },
       			{ "name": "WEBHCAT_SERVER" },
-      			{ "name": "FALCON_SERVER" },
-      			{ "name": "APP_TIMELINE_SERVER"},
-                { "name": "NIMBUS" },
-                { "name": "STORM_UI_SERVER" },
-                { "name": "DRPC_SERVER" },
+      			{ "name": "APP_TIMELINE_SERVER" },
+                { "name": "KAFKA_BROKER" },
       			
             	{ "name": "DATANODE" },
-                { "name": "SUPERVISOR" },
             	{ "name": "HBASE_REGIONSERVER" },
             	{ "name": "GANGLIA_MONITOR" },
             	{ "name": "NODEMANAGER" },
@@ -40,7 +67,6 @@
             	{ "name": "HDFS_CLIENT" },
             	{ "name": "MAPREDUCE2_CLIENT" },
             	{ "name": "YARN_CLIENT" },
-            	{ "name": "FALCON_CLIENT" },
             	{ "name": "HBASE_CLIENT" },
             	{ "name": "HIVE_CLIENT" },
             	{ "name": "TEZ_CLIENT" },
@@ -52,12 +78,10 @@
 
       			{ "name": "SECONDARY_NAMENODE" },   
 				{ "name": "ZOOKEEPER_CLIENT" },
-                
                 { "name": "RESOURCEMANAGER" }, 
       			{ "name": "HISTORYSERVER" },        
         		{ "name": "HIVE_SERVER" },          
-            	{ "name": "HIVE_METASTORE" },       
-            	{ "name": "MYSQL_SERVER" }
+            	{ "name": "HIVE_METASTORE" }
         	]
         }
     ] 
