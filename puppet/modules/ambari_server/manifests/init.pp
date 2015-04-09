@@ -1,13 +1,39 @@
-class ambari_server ($repo) {
+class ambari_server ($ambari="1.6.0", $os="centos6", $stack="2.1", $update="2.1.3.0", $util="1.1.0.17") {
+ 
+   
+  $ambari_path = $ambari ? {
+    /^1.*/ => '1.x',
+    /^2.*/ => '2.x'
+  }
+    
+  $stack_path = $stack ? {
+    /^1.*/ => '1.x',
+    /^2.*/ => '2.x'
+  }
+   
+  $os_type = $os ? {
+    'centos6' => 'redhat6',
+    'centos5' => 'redhat5', 
+    default => $os,
+  }
+ 
+  $update_path = $update ? {
+    /.*-latest/ => $update,
+    default =>  "updates/${update}"
+  }
+    
+    notice("Ambari server config: OS=${os}, OS_Type=${os_type}, Stack=${stack}, Stack_Path=${stack_path}, Ambari=${ambari}, Ambari_Path=${ambari_path}, Update=${update}, Update_Path=${update_path}, Util=${util}")
+
   Exec {
-    path => ["/bin/", "/sbin/", "/usr/bin/", "/usr/sbin/"] }
+    path => ["/bin/", "/sbin/", "/usr/bin/", "/usr/sbin/"]
+  }
 
   # Ambari Repo
   exec { 'get-ambari-server-repo':
-    command => "wget ${repo}", 
+    command => "wget http://public-repo-1.hortonworks.com/ambari/${os}/${ambari_path}/updates/${ambari}/ambari.repo", 
     cwd     => '/etc/yum.repos.d/',
     creates => '/etc/yum.repos.d/ambari.repo',
-    user    => root
+    user    => root,
   }
 
   # Ambari Server
@@ -15,24 +41,38 @@ class ambari_server ($repo) {
     ensure  => present,
     require => Exec[get-ambari-server-repo]
   }
+
+  augeas { 'repolist-hdp':
+    require => Package[ambari-server],
+    lens => "Xml.lns",
+    incl => "/var/lib/ambari-server/resources/stacks/HDP/2.1/repos/repoinfo.xml",
+    onlyif => [
+      "match reposinfo/os[#attribute/type='${os_type}']/repo[repoid/#text='HDP-${stack}']/baseurl size == 1",
+      "get reposinfo/os[#attribute/type='${os_type}']/repo[repoid/#text='HDP-${stack}']/baseurl/#text != 'http://public-repo-1.hortonworks.com/HDP/${os}/${stack_path}/${update_path}/'",
+    ],
+    changes => [
+      "set reposinfo/os[#attribute/type='${os_type}']/repo[repoid/#text='HDP-${stack}']/baseurl/#text http://public-repo-1.hortonworks.com/HDP/${os}/${stack_path}/${update_path}/",
+    ]
+  }
   
-#  augeas { 'repolist':
-#    require => Package[ambari-server],
-#    lens => "Xml.lns",
-#    incl => '/var/lib/ambari-server/resources/stacks/HDP/2.2/repos/repoinfo.xml',
-#    onlyif => "match dir[. = '/var/lib/ambari-server/resources/stacks/HDP/2.2/repos'] size != 0",
-#    changes => [
-#      "set reposinfo/latest/#text http://henning.kropponline.de/files/hdpqe_urlinfo-7.json",
-#      "set reposinfo/os[#attribute/type='redhat6']/repo[repoid/#text='HDP-2.2']/baseurl/#text http://public-repo-1.hortonworks.com/HDP-LABS/Projects/Champlain-Preview/2.2.0.0-7/centos6",
-#      "set reposinfo/os[#attribute/type='redhat6']/repo[repoid/#text='HDP-UTILS-1.1.0.20']/baseurl/#text http://public-repo-1.hortonworks.com/HDP-UTILS-1.1.0.19/repos/centos6"
-#    ]
-#  }
+  augeas { 'repolist-hdp-utils':
+    require => Package[ambari-server],
+    lens => "Xml.lns",
+    incl => "/var/lib/ambari-server/resources/stacks/HDP/2.1/repos/repoinfo.xml",
+    onlyif => [
+      "match reposinfo/os[#attribute/type='${os_type}']/repo[repoid/#text='HDP-UTILS-${util}']/baseurl size == 1",
+      "get reposinfo/os[#attribute/type='${os_type}']/repo[repoid/#text='HDP-UTILS-${util}']/baseurl/#text != 'http://public-repo-1.hortonworks.com/HDP-UTILS-${util}/repos/${os}/'",
+    ],
+    changes => [
+      "set reposinfo/os[#attribute/type='${os_type}']/repo[repoid/#text='HDP-UTILS-${util}']/baseurl/#text http://public-repo-1.hortonworks.com/HDP-UTILS-${util}/repos/${os}/"
+    ]
+  }
 
   exec { 'ambari-setup':
     command => "ambari-server setup -s",
     user    => root,
-    #require => Augeas[repolist],
-    require => Package[ambari-server],
+    require => [Augeas[repolist-hdp], Augeas[repolist-hdp-utils]],
+    #require => Package[ambari-server],
     timeout => 2600     # increase timeout for jdk download, use proxy
   }
 

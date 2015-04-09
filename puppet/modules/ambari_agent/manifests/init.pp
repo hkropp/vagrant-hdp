@@ -1,12 +1,20 @@
 
-class ambari_agent ($ownhostname, $serverhostname, $repo) {
+class ambari_agent ($ownhostname, $serverhostname, $ambari, $os) {
+
+  $ambari_path = $ambari ? {
+    /^1.*/ => '1.x',
+    /^2.*/ => '2.x'
+  }
+  
+  notice("Ambari client config: OS=${os}, Ambari=${ambari}, Ambari_Path=${ambari_path}")
+  
   Exec {
     path => ["/bin/", "/sbin/", "/usr/bin/", "/usr/sbin/"] }
 
 
   # Ambari Repo
   exec { 'get-ambari-agent-repo':
-    command => "wget ${repo}",
+    command => "wget http://public-repo-1.hortonworks.com/ambari/${os}/${ambari_path}/updates/${ambari}/ambari.repo",
     cwd     => '/etc/yum.repos.d/',
     creates => '/etc/yum.repos.d/ambari.repo',
     user    => root
