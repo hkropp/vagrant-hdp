@@ -1,0 +1,11 @@
+DEBUG = true
+
+AMBARI_VERSIONS = ["1.6.0"]
+
+AMBARI_REPOS = {}
+AMBARI_REPOS["1.6.0"] = "hi"
+
+if DEBUG
+    puts AMBARI_VERSIONS
+    puts AMBARI_REPOS
+end

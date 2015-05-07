@@ -45,26 +45,26 @@ class ambari_server ($ambari="1.6.0", $os="centos6", $stack="2.1", $update="2.1.
   augeas { 'repolist-hdp':
     require => Package[ambari-server],
     lens => "Xml.lns",
-    incl => "/var/lib/ambari-server/resources/stacks/HDP/2.1/repos/repoinfo.xml",
+    incl => "/var/lib/ambari-server/resources/stacks/HDP/${stack}/repos/repoinfo.xml",
     onlyif => [
-      "match reposinfo/os[#attribute/type='${os_type}']/repo[repoid/#text='HDP-${stack}']/baseurl size == 1",
-      "get reposinfo/os[#attribute/type='${os_type}']/repo[repoid/#text='HDP-${stack}']/baseurl/#text != 'http://public-repo-1.hortonworks.com/HDP/${os}/${stack_path}/${update_path}/'",
+      "match reposinfo/os[#attribute/family='${os_type}']/repo[repoid/#text='HDP-${stack}']/baseurl size == 1",
+      "get reposinfo/os[#attribute/family='${os_type}']/repo[repoid/#text='HDP-${stack}']/baseurl/#text != 'http://public-repo-1.hortonworks.com/HDP/${os}/${stack_path}/${update_path}/'",
     ],
     changes => [
-      "set reposinfo/os[#attribute/type='${os_type}']/repo[repoid/#text='HDP-${stack}']/baseurl/#text http://public-repo-1.hortonworks.com/HDP/${os}/${stack_path}/${update_path}/",
+      "set reposinfo/os[#attribute/family='${os_type}']/repo[repoid/#text='HDP-${stack}']/baseurl/#text http://public-repo-1.hortonworks.com/HDP/${os}/${stack_path}/${update_path}/",
     ]
   }
   
   augeas { 'repolist-hdp-utils':
     require => Package[ambari-server],
     lens => "Xml.lns",
-    incl => "/var/lib/ambari-server/resources/stacks/HDP/2.1/repos/repoinfo.xml",
+    incl => "/var/lib/ambari-server/resources/stacks/HDP/${stack}/repos/repoinfo.xml",
     onlyif => [
-      "match reposinfo/os[#attribute/type='${os_type}']/repo[repoid/#text='HDP-UTILS-${util}']/baseurl size == 1",
-      "get reposinfo/os[#attribute/type='${os_type}']/repo[repoid/#text='HDP-UTILS-${util}']/baseurl/#text != 'http://public-repo-1.hortonworks.com/HDP-UTILS-${util}/repos/${os}/'",
+      "match reposinfo/os[#attribute/family='${os_type}']/repo[reponame/#text='HDP-UTILS']/baseurl size == 1",
+      "get reposinfo/os[#attribute/family='${os_type}']/repo[reponame/#text='HDP-UTILS']/baseurl/#text != 'http://public-repo-1.hortonworks.com/HDP-UTILS-${util}/repos/${os}/'",
     ],
     changes => [
-      "set reposinfo/os[#attribute/type='${os_type}']/repo[repoid/#text='HDP-UTILS-${util}']/baseurl/#text http://public-repo-1.hortonworks.com/HDP-UTILS-${util}/repos/${os}/"
+      "set reposinfo/os[#attribute/family='${os_type}']/repo[reponame/#text='HDP-UTILS']/baseurl/#text http://public-repo-1.hortonworks.com/HDP-UTILS-${util}/repos/${os}/"
     ]
   }
 
@@ -86,5 +86,15 @@ class ambari_server ($ambari="1.6.0", $os="centos6", $stack="2.1", $update="2.1.
     command => "ambari-server start",
     require => Service[ambari-server],
     onlyif  => 'ambari-server status | grep "not running"'
+  }
+
+  exec { "cp-mysql-connector":
+    command => "cp /usr/share/java/mysql-connector-java.jar /var/lib/ambari-server/resources/mysql-jdbc-driver.jar",
+    creates => "/var/lib/ambari-server/resources/mysql-jdbc-driver.jar",
+    onlyif => [
+      "test -f /usr/share/java/mysql-connector-java.jar",
+      "test -d /var/lib/ambari-server/resources/"
+    ],
+    require => Exec['ambari-setup']
   }
 }
