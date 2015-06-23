@@ -59,7 +59,8 @@ if hdp_conf[:vagrant_provider] == "virtualbox"
                 provisioner.autoconfigure = false
                 provisioner.add_localhost_hostnames = false
                 nodes.each do |n|
-                    provisioner.add_host n[:ip], [n[:name], n[:name].split(".")[0]]
+                    #provisioner.add_host n[:ip], [n[:name], n[:name].split(".")[0]]
+                    provisioner.add_host n[:ip], [n[:name]]
                 end
             end
             
@@ -133,7 +134,7 @@ elsif hdp_conf[:vagrant_provider] == "azure"
                     	"hdp_os" => hdp_conf[:hdp_os], 
                     	"hdp_stack" => hdp_conf[:hdp_stack],
                     	"hdp_update" => hdp_conf[:hdp_update],
-                    	"hdp_util" => hdp_conf[:hdp_util],
+                    	"hdp_util" => hdp_conf[:hdp_util]
                 	}	
                 end
             end
