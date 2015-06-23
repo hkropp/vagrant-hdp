@@ -139,4 +139,26 @@ elsif hdp_conf[:vagrant_provider] == "azure"
             end
         end
     end
+
+elsif hdp_conf[:vagrant_provider] == "openstack"
+	
+	require 'vagrant-openstack-provider'	
+	Vagrant.configure("2") do |config|
+    	config.vm.box = "dummy"   
+    
+    	# Make sure the private key from the key pair is provided
+    	config.ssh.private_key_path = "/Users/hkropp/.ssh/openstack_rsa"
+    
+   		config.vm.provider :openstack do |os|
+        	os.username            = "xxx"                       # e.g. "#{ENV['OS_USERNAME']}"
+        	os.password            = "xxxxxx"                        # e.g. "#{ENV['OS_PASSWORD']}"
+        	os.tenant_name         = "secloud"
+        	os.flavor              = "m3.medium"                    # Regex or String
+        	os.image               = "centos-6.4"                   # Regex or String
+        	os.openstack_auth_url  = "xxxxxxx"    # e.g. "#{ENV['OS_AUTH_URL']}/tokens"
+        	os.keypair_name        = "openstack_rsa"                # as stored in Nova
+        	os.ssh_username        = "root"                         # login for the VM
+    	end
+	end
+
 end

@@ -1,6 +1,10 @@
 include interfering_services
 include ntp
 include hdp_mysql
+include ambari_views::file_view
+include ambari_views::hive_view
+include ambari_views::capacity_scheduler_view
+include ambari_services::zeppelin_service
 
 class {'etchosts':
     ownhostname => $ownhostname
@@ -24,4 +28,5 @@ class { 'ambari_agent':
 }
 
 # Establish ordering
-Class['interfering_services'] -> Class['ntp'] -> Class['etchosts'] -> Class['hdp_mysql'] -> Class['ambari_server'] -> Class['ambari_agent']
+Class['interfering_services'] -> Class['ntp'] -> Class['etchosts'] -> Class['hdp_mysql'] -> Class['ambari_server'] -> Class['ambari_agent'] 
+-> Class['ambari_views::file_view'] -> Class['ambari_views::hive_view'] -> Class['ambari_views::capacity_scheduler_view'] -> Class['ambari_services::zeppelin_service']

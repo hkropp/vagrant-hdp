@@ -105,3 +105,126 @@
         "stack_version": "2.1"
     }
 }
+
+{
+    "Blueprints" : {
+        "blueprint_name" : "tchibo-n5-blueprint",
+        "stack_name" : "HDP",
+        "stack_version" : "2.2"
+    },
+    "configurations": [
+    	{
+        	"nagios-env": {
+            	"nagios_contact": "root@localhost",
+            	"nagios_group" : "nagios",
+            	"nagios_user" : "nagios",
+            	"nagios_web_login" : "nagiosadmin",
+            	"nagios_web_password" : "admin"
+            }
+        },{
+        	"hdfs-site": {
+        		"dfs.namenode.name.dir" : "/disk0/hdfs/namenode,/disk1/hdfs/namenode,/disk2/hdfs/namenode,/disk3/hdfs/namenode,/disk4/hdfs/namenode,/disk5/hdfs/namenode,/disk6/hdfs/namenode,/disk7/hdfs/namenode,/disk8/hdfs/namenode,/disk9/hdfs/namenode,/disk10/hdfs/namenode,/disk11/hdfs/namenode",
+        		"dfs.namenode.checkpoint.dir": "/disk0/hdfs/namesecondary,/disk1/hdfs/namesecondary,/disk2/hdfs/namesecondary,/disk3/hdfs/namesecondary,/disk4/hdfs/namesecondary,/disk5/hdfs/namesecondary,/disk6/hdfs/namesecondary,/disk7/hdfs/namesecondary,/disk8/hdfs/namesecondary,/disk9/hdfs/namesecondary,/disk10/hdfs/namesecondary,/disk11/hdfs/namesecondary",
+        		"dfs.journalnode.edits.dir" : "/disk0/hdfs/journalnode,/disk1/hdfs/journalnode,/disk2/hdfs/journalnode,/disk3/hdfs/journalnode,/disk4/hdfs/journalnode,/disk5/hdfs/journalnode,/disk6/hdfs/journalnode,/disk7/hdfs/journalnode,/disk8/hdfs/journalnode,/disk9/hdfs/journalnode,/disk10/hdfs/journalnode,/disk11/hdfs/journalnode",
+        		"dfs.datanode.data.dir" : "/disk0/hdfs/datat,/disk1/hdfs/data,/disk2/hdfs/data,/disk3/hdfs/datat,/disk4/hdfs/data,/disk5/hdfs/data,/disk6/hdfs/datat,/disk7/hdfs/data,/disk8/hdfs/data,/disk9/hdfs/datat,/disk10/hdfs/data,/disk11/hdfs/data"
+        	}
+        },{
+        	"hive-site": {
+        		"javax.jdo.option.ConnectionDriverName" : "com.mysql.jdbc.Driver",
+        		"javax.jdo.option.ConnectionPassword" : "hive123",
+        		"javax.jdo.option.ConnectionURL" : "jdbc:mysql://one.hdp/hive?createDatabaseIfNotExist=true",
+        		"javax.jdo.option.ConnectionUserName" : "hive"
+        	}
+        },{
+        	"hive-env": {
+        		"hcat_log_dir" : "/var/log/hadoop/webhcat",
+        		"hive_log_dir" : "/var/log/hadoop/hive"
+        	}
+        },{
+        	"oozie-site": {
+        		"oozie.db.schema.name" : "oozie",
+        		"oozie.service.JPAService.create.db.schema" : "true",
+        		"oozie.service.JPAService.jdbc.driver" : "com.mysql.jdbc.Driver",
+        		"oozie.service.JPAService.jdbc.username" : "oozie",
+        		"oozie.service.JPAService.jdbc.password" : "oozie123",
+        		"oozie.service.JPAService.jdbc.url" : "jdbc:mysql://one.hdp:3306/oozie"
+        	}
+        },{
+        	"oozie-env": {
+        		"oozie_log_dir" : "/var/log/hadoop/oozie"
+        	}
+        },{
+        	"falcon-env": {
+        		"falcon_log_dir": "/var/log/hadoop/falcon"
+        },
+        "flume-env": {
+        	"flume_log_dir": "/var/log/hadoop/flume"
+        },
+        "hbase-env": {
+        	"hbase_log_dir": "/var/log/hadoop/hbase"
+        },
+        "hadoop-env": {
+        	"hdfs_log_dir_prefix": "/var/log/hadoop/hadoop"
+        },
+        "storm-site": {
+        	"storm_log_dir" : "/var/log/hadoop/storm"
+        },
+        "yarn-env": {
+        	"yarn_log_dir_prefix" : "/var/log/hadoop/hadoop-yarn"
+        },
+        "yarn-site": {
+        	"yarn.nodemanager.log-dirs" : "/hadoop/yarn/log",
+        	"yarn.nodemanager.remote-app-log-dir" : "/app-logs",
+        	"yarn.nodemanager.remote-app-log-dir-suffix" : "logs"
+        },
+        "mapred-env": {
+        	"mapred_log_dir_prefix" : "/var/log/hadoop-mapreduce"
+        },
+        "zookeeper-env": {
+        	"zk_log_dir" : "/var/log/hadoop/zookeeper"
+        }
+    }],
+    "host_groups" : [{ 
+        "name" : "001_master_node",
+        "cardinality" : "1",
+        "components" : [
+            { "name": "NAMENODE" },
+            { "name": "ZOOKEEPER_SERVER" },
+            { "name": "GANGLIA_SERVER" },
+            { "name": "OOZIE_SERVER" },
+            { "name": "KNOX_GATEWAY" },
+
+            { "name": "HDFS_CLIENT" },
+            { "name": "MAPREDUCE2_CLIENT" },
+            { "name": "YARN_CLIENT" },
+            { "name": "HIVE_CLIENT" },
+            { "name": "TEZ_CLIENT" },
+            { "name": "HCAT" },
+            { "name": "OOZIE_CLIENT" },
+            { "name": "PIG" },
+            { "name": "SQOOP" },
+            { "name": "ZOOKEEPER_CLIENT" }
+        ]
+    },{
+        "name" : "002_master_node",
+        "cardinality" : "1",
+        "components" : [
+            { "name": "SECONDARY_NAMENODE" },
+            { "name": "RESOURCEMANAGER" },
+            { "name": "APP_TIMELINE_SERVER"},
+            { "name": "HIVE_SERVER" },
+            { "name": "HIVE_METASTORE" },
+            { "name": "WEBHCAT_SERVER" },
+            { "name": "HISTORYSERVER" }
+        ]
+    },{
+        "name" : "001_data_node",
+        "cardinality" : "1",
+        "components" : [
+            { "name": "DATANODE" },
+            { "name": "NODEMANAGER" },
+            { "name": "GANGLIA_MONITOR" }
+        ]
+    }] 
+}
+
