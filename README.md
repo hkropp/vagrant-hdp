@@ -44,7 +44,7 @@ Multiple nodes can be configured using `conf/nodes.rb`:
 ```
 [
     {
-        :name => "n01", 
+        :name => "one.hdp", 
         :cpu => 8, 
         :mem => 9216, 
         :ip => "192.168.33.100", 
