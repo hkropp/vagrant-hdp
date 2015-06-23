@@ -17,5 +17,5 @@
     :azure_ssh_port => "22",
     :azure_ssh_private_key_file => "/Users/hkropp/.ssh/xxxx.key",
     :azure_ssh_certificate_file => "/Users/hkropp/.ssh/xxxx.pem",
-    :ambari_node => "one.hdp", "n01-hdp-vagrant-demo.cloudapp.net",
+    :ambari_node => "one.hdp", # "n01-hdp-vagrant-demo.cloudapp.net",
 }
