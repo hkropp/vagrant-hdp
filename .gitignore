@@ -1,4 +1,4 @@
 .vagrant
-jdk-7u67-linux-x64.tar.gz
-azure/**/Vagrantfile
+jdk-*tar.gz
 license.lic
+conf/azure.rb
