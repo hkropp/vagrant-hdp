@@ -1,0 +1,1 @@
+class ambari_views { }

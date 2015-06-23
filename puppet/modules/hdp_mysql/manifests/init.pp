@@ -80,7 +80,7 @@ class hdp_mysql {
     mysql_user {'oozie@%':
         ensure => 'present',
         password_hash => '*F48D8C9FDE123A678CE26563F4E7F048ABA60C94', #oozie123
-        require => Mysql_database[hive]
+        require => Mysql_database[oozie]
     }
     
     mysql_grant { 'oozie@%/oozie.*':
@@ -90,6 +90,45 @@ class hdp_mysql {
         table      => 'oozie.*',
         user       => 'oozie@%',
         require    => Mysql_user['oozie@%']
+    }
+
+    ###
+    # Ranger
+    ## 
+    mysql_database { 'ranger':
+        ensure => 'present',
+        charset => 'utf8',
+        require => Class['mysql::server']
+    }
+
+    mysql_user {'ranger@localhost':
+        ensure => 'present',
+        password_hash => '*2D1DBE4DBB7C844A55C4A43D27EC57B1561C0280', # ranger123
+        require => Mysql_database[ranger]
+    }   
+    
+    mysql_grant { 'ranger@localhost/ranger.*':
+        ensure     => 'present',
+        options    => ['GRANT'],
+        privileges => ['ALL'],
+        table      => 'ranger.*',
+        user       => 'ranger@localhost',
+        require    => Mysql_user['ranger@localhost']
+    }
+    
+    mysql_user {'ranger@%':
+        ensure => 'present',
+        password_hash => '*2D1DBE4DBB7C844A55C4A43D27EC57B1561C0280', #ranger123
+        require => Mysql_database[ranger]
+    }
+    
+    mysql_grant { 'ranger@%/ranger.*':
+        ensure     => 'present',
+        options    => ['GRANT'],
+        privileges => ['ALL'],
+        table      => 'ranger.*',
+        user       => 'ranger@%',
+        require    => Mysql_user['ranger@%']
     }
 
     class { 'mysql::bindings':
