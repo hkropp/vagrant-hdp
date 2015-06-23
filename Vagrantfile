@@ -51,6 +51,7 @@ if hdp_conf[:vagrant_provider] == "virtualbox"
             node_config.vm.provider :virtualbox do |vb|
                 vb.name = "hdp_%s_%s_%s-%s" % [ hdp_conf[:hdp_stack], hdp_conf[:hdp_update], hdp_conf[:hdp_ambari], opts[:name].to_s]
                 vb.customize ["modifyvm", :id, "--cpus", opts[:cpu] ] if opts[:cpu]
+                vb.customize ["modifyvm", :id, "--ioapic", "on"]
                 vb.customize ["modifyvm", :id, "--memory", opts[:mem] || 2048 ]
             end
     
@@ -86,47 +87,54 @@ if hdp_conf[:vagrant_provider] == "virtualbox"
 
 elsif hdp_conf[:vagrant_provider] == "azure"
     
+    CLOUD_SERVICE_NAME=hdp_conf[:azure_cloud_service_name]
+
     Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
-        config.vm.box = BOX
-        config.ssh.private_key_path = ''
-        config.ssh.username = 'hdpuser'
+    
+        config.vm.box = hdp_conf[:vagrant_provider]
+        config.ssh.private_key_path = hdp_conf[:azure_ssh_private_key_file]
+        config.ssh.username = hdp_conf[:azure_vm_user]
 
         nodes.each do |opts|
             config.vm.define opts[:name] do |config| 
                 config.vm.provider :azure do |azure|
-                    azure.mgmt_certificate = ''
-                    azure.mgmt_endpoint = 'https://management.core.windows.net'
-                    azure.subscription_id = ''
+                    azure.mgmt_certificate = hdp_conf[:azure_mgmt_certificate]    
+                    azure.mgmt_endpoint = hdp_conf[:azure_mgmt_endpoint]
+                    azure.subscription_id = hdp_conf[:azure_subscription_id]
             
-                    azure.storage_acct_name = 'hpdimages'
+                    azure.storage_acct_name = hdp_conf[:azure_storage_acct_name]
                     
-                    azure.vm_image = 'HDP-CentOS-66-v2' 
-                    azure.vm_size = opts[:vm_size]  # Allowed values are 'ExtraSmall,Small,Medium,Large,ExtraLarge,A6,A7' http://msdn.microsoft.com/en-us/library/azure/dn197896.aspx
-                    azure.vm_user = 'hdpuser'
-                    azure.vm_virtual_network_name = "hwx-net" # opts[:vm_net].to_s
+                    azure.vm_image = opts[:azure_vm_image] 
+                    azure.vm_size = opts[:azure_vm_size]  # Allowed values are 'ExtraSmall,Small,Medium,Large,ExtraLarge,A6,A7' http://msdn.microsoft.com/en-us/library/azure/dn197896.aspx
+                    azure.vm_user = hdp_conf[:azure_vm_user]
+                    azure.vm_virtual_network_name = hdp_conf[:azure_vm_virtual_network_name] # opts[:vm_net].to_s
                     #azure.vm_virtual_network_ip = opts[:vm_ip]
                     #azure.vm_subnet_name = opts[:vm_subnet]
                     azure.vm_name = opts[:name].to_s
-                    azure.vm_location = 'West Europe'
+                    azure.vm_location = hdp_conf[:azure_vm_location] 
 
-                    azure.cloud_service_name = "%s-%s" % [CLOUD_SERVICE_NAME, opts[:manifest_name]]
+                    azure.cloud_service_name = "%s-%s" % [opts[:name], CLOUD_SERVICE_NAME]
             
-                    azure.ssh_private_key_file = ''
-                    azure.ssh_certificate_file = ''
+                    azure.ssh_private_key_file = hdp_conf[:azure_ssh_private_key_file]
+                    azure.ssh_certificate_file = hdp_conf[:azure_ssh_certificate_file]
 
-                    azure.ssh_port = opts[:ssh_port]
-                    azure.tcp_endpoints = '8080'
+                    azure.ssh_port = hdp_conf[:ssh_port]
+                    azure.tcp_endpoints = opts[:tcp_endpoints]
                 end
 
-                config.vm.provision "puppet" do |puppet|
+                config.vm.provision "puppet" do |puppet|        
                     puppet.manifests_path = MANIFESTS_PATH
-                    puppet.module_path = MODULES_PATH
-                    puppet.manifest_file = "%s.pp" % opts[:manifest_name].to_s
-                    puppet.facter = {
-                        "hdp_ambari_repo" => HDP_AMBARI_REPO,
-                        "ownhostname" => "%s.%s" % [ opts[:name].to_s, "hdp"],
-                        "ambarihostname" => AMBARI_HOST_NAME
-                    }
+                	puppet.module_path = MODULES_PATH
+                	puppet.manifest_file = opts[:manifest_file].to_s
+                	puppet.facter = {
+                    	"ownhostname" => opts[:name],
+                    	"ambarihostname" => AMBARI_HOST_NAME,
+                    	"hdp_ambari" => hdp_conf[:hdp_ambari],
+                    	"hdp_os" => hdp_conf[:hdp_os], 
+                    	"hdp_stack" => hdp_conf[:hdp_stack],
+                    	"hdp_update" => hdp_conf[:hdp_update],
+                    	"hdp_util" => hdp_conf[:hdp_util],
+                	}	
                 end
             end
         end
