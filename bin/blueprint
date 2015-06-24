@@ -1,0 +1,93 @@
+#!/bin/sh
+
+AMBARI_USER='admin'
+AMBARI_USER_PASSWORD='admin' 
+AMBARI_HOST='localhost'
+CLUSTER_NAME='HDP'
+
+command=
+
+# Reset all variables that might be set
+file=
+verbose=0 # Variables to be evaluated as shell arithmetic should be initialized to a default or validated beforehand.
+
+while :; do
+    case $1 in
+        -h|-\?|--help)   # Call a "show_help" function to display a synopsis, then exit.
+            show_help
+            exit
+            ;;
+        -u|--user)       # 
+            AMBARI_USER=$2
+            shift 2
+            continue
+            ;;
+        -p|--password)
+            AMBARI_USER_PASSWORD=$2
+            shift 2
+            continue
+            ;;
+        -c|--cluster-name)
+            CLUSTER_NAME=$2
+            shift 2
+            continue
+            ;;
+        -a|--host)
+            AMBARI_HOST=$2
+            shift 2
+            continue
+            ;;
+        --)  
+            shift
+            break
+            ;;
+        -?*)
+            printf 'WARN: Unknown option (ignored): %s\n' "$1" >&2
+            ;;
+        *)               # Default case: If no more options then break out of the loop.
+            break
+    esac
+
+    shift
+done
+
+#if [ -z "$file" ]; then
+#    printf 'ERROR: option "--file FILE" not given. See --help.\n' >&2
+#    exit 1
+#fi
+
+#echo $AMBARI_USER
+#echo $AMBARI_USER_PASSWORD
+#echo $AMBARI_HOST
+#echo $CLUSTER_NAME
+
+function install ()
+{
+  blueprint_file="blueprints/${1}/blueprint.json"
+  hostmapping_file="blueprints/${1}/hostmapping.json"
+  
+  if [ ! -f "$blueprint_file" ]; then
+      printf "ERROR: Blueprint $blueprint_file does not exist!\n"
+      exit 1
+  fi
+  if [ ! -f "$hostmapping_file" ]; then
+    printf "ERROR: Hostmapping $hostmapping_file does not exist!\n"
+    exit 1
+  fi
+
+  printf "Creating Blueprint <%s> ...\n" "$blueprint_file"
+  curl --user $AMBARI_USER:$AMBARI_USER_PASSWORD -H 'X-Requested-By:mycompany' -X POST "http://${AMBARI_HOST}:8080/api/v1/blueprints/${1}?validate_topology=false" -d @${blueprint_file}
+
+  printf "Creating Hostmapping <%s> ...\n" "$hostmapping_file"
+  curl --user $AMBARI_USER:$AMBARI_USER_PASSWORD -H 'X-Requested-By:mycompany' -X POST "http://${AMBARI_HOST}:8080/api/v1/clusters/$CLUSTER_NAME" -d @${hostmapping_file}
+}
+
+function clean()
+{
+  #curl --user admin:admin -H 'X-Requested-By:mycompany' -X DELETE "http://localhost:8080/api/v1/blueprints/vagrant-hdp22-n1"
+  #curl --user admin:admin -H 'X-Requested-By:mycompany' -X DELETE "http://localhost:8080/api/v1/clusters/hdp22"
+}
+
+if [[ $1=="inst" ]]; then
+  install $2
+fi
