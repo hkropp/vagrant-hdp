@@ -3,7 +3,7 @@
 	"default_password": "admin",
 	"host_groups":[
 		{ 
-			"name":"master_slave_client_1",
+			"name":"node_1",
       		"hosts":[ { "fqdn":"one.hdp" } ] 
 		}
 	]

@@ -22,11 +22,14 @@ vagrant_hdp.validate(hdp_conf)
 #puts hdp[:hdp_stack]
 #Process.exit
 
-# default and only box currently supported
-BOX="puppetlabs/centos-6.5-64-puppet"
-BOX_URL="http://developer.nrel.gov/downloads/vagrant-boxes/CentOS-6.4-x86_64-v20130731.box"
+if hdp_conf[:hdp_os] == "centos6"
+  BOX="puppetlabs/centos-6.6-64-puppet"
+elsif hdp_conf[:hdp_os] == "centos7"
+  BOX="puppetlabs/centos-7.0-64-puppet"
+end
+#BOX_URL="http://developer.nrel.gov/downloads/vagrant-boxes/CentOS-6.4-x86_64-v20130731.box"
       
-MANIFESTS_PATH='manifests'
+ENVIRONMENT_PATH='puppet/envs'
 MODULES_PATH='puppet/modules'
 
 AMBARI_HOST_NAME = hdp_conf[:ambari_node]
@@ -38,7 +41,7 @@ if hdp_conf[:vagrant_provider] == "virtualbox"
     Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     
       config.vm.box = BOX
-      config.vm.box_url = BOX_URL
+      #config.vm.box_url = BOX_URL
       
       if Vagrant.has_plugin?("vagrant-cachier")
         config.cache.scope = :box
@@ -69,17 +72,22 @@ if hdp_conf[:vagrant_provider] == "virtualbox"
             end
     
             node_config.vm.provision "puppet" do |puppet|
-                puppet.manifests_path = MANIFESTS_PATH
+                puppet.environment_path = ENVIRONMENT_PATH
+                puppet.environment = opts[:node_env]
                 puppet.module_path = MODULES_PATH
-                puppet.manifest_file = opts[:manifest_file].to_s
+                #puppet.manifest_file = opts[:manifest_file].to_s
                 puppet.facter = {
                     "ownhostname" => opts[:name],
                     "ambarihostname" => AMBARI_HOST_NAME,
+                    "blueprint_name" => hdp_conf[:blueprint_name],
                     "hdp_ambari" => hdp_conf[:hdp_ambari],
                     "hdp_os" => hdp_conf[:hdp_os], 
                     "hdp_stack" => hdp_conf[:hdp_stack],
                     "hdp_update" => hdp_conf[:hdp_update],
                     "hdp_util" => hdp_conf[:hdp_util],
+                    "krb5_realm" => hdp_conf[:krb5_realm],
+                    "krb5_kdc" => hdp_conf[:krb5_kdc],
+                    "jdk_version" => hdp_conf[:jdk_version],
                 }
             end
           end

@@ -9,13 +9,15 @@ class interfering_services {
   }
 
   # Stop IP Tables
-  exec { "stop_ip_tables":
-    path    => ["/bin/", "/sbin/", "/usr/bin/", "/usr/sbin/"],
-    command => "service iptables stop"
+  service { "iptables":
+    ensure => "stopped"
+  }
+
+  service {"firewalld":
+    ensure => "stopped"
   }
   
-   exec { "stop_ip_tables6":
-    path    => ["/bin/", "/sbin/", "/usr/bin/", "/usr/sbin/"],
-    command => "service ip6tables stop"
+  service { "ip6tables":
+    ensure => "stopped"
   }
 }

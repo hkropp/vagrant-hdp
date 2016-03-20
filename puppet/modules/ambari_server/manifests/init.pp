@@ -79,7 +79,7 @@ class ambari_server ($ambari="1.6.0", $os="centos6", $stack="2.1", $update="2.1.
   service { 'ambari-server':
     ensure  => running,
     require => [Package[ambari-server], Exec[ambari-setup]],
-    start   => Exec[ambari-server-start]
+    #start   => Exec[ambari-server-start]
   }
 
   exec { 'ambari-server-start':

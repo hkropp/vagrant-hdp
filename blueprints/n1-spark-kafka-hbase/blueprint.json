@@ -13,6 +13,10 @@
                 "nagios_web_password": "admin"
             }
         },{
+            "hdfs-site": {
+                "dfs.replication": "1"
+            }
+        },{
             "core-site": {
                 "hadoop.proxyuser.root.groups": "*",
                 "hadoop.proxyuser.root.hosts": "*",
@@ -33,9 +37,9 @@
             }
         },{
             "hive-site": {
-		"hive.txn.manager": "org.apache.hadoop.hive.ql.lockmgr.DbTxnManager",
-		"hive.compactor.initiator.on": "true",
-		"hive.compactor.worker.threads": "5",
+		        "hive.txn.manager": "org.apache.hadoop.hive.ql.lockmgr.DbTxnManager",
+		        "hive.compactor.initiator.on": "true",
+		        "hive.compactor.worker.threads": "5",
                 "javax.jdo.option.ConnectionDriverName": "com.mysql.jdbc.Driver",
                 "javax.jdo.option.ConnectionPassword": "hive123",
                 "javax.jdo.option.ConnectionURL": "jdbc:mysql://localhost/hive?createDatabaseIfNotExist=true",
@@ -51,7 +55,7 @@
     ],
 	"host_groups" : [
 		{ 
-		"name" : "master_slave_client_1",
+		"name" : "node_1",
 		"cardinality" : "1",
       		"components" : [
       		    { "name": "NAMENODE" },
@@ -70,7 +74,6 @@
                 { "name": "FALCON_SERVER" },
                 { "name": "HBASE_MASTER" },
                 { "name" : "RANGER_USERSYNC" },
-                { "name" : "RANGER_ADMIN" },
 
       			
             	{ "name": "DATANODE" },

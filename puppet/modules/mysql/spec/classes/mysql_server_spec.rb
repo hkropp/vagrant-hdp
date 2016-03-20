@@ -20,10 +20,18 @@ describe 'mysql::server' do
         end
 
         context 'mysql::server::install' do
-          it 'contains the package' do
+          it 'contains the package by default' do
             is_expected.to contain_package('mysql-server').with({
               :ensure => :present,
             })
+          end
+          context 'with package_manage set to true' do
+            let(:params) {{ :package_manage => true }}
+            it { is_expected.to contain_package('mysql-server') }
+          end
+          context 'with package_manage set to false' do
+            let(:params) {{ :package_manage => false }}
+            it { is_expected.not_to contain_package('mysql-server') }
           end
           context 'with datadir overridden' do
             let(:params) {{ :override_options => { 'mysqld' => { 'datadir' => '/tmp' }} }}
@@ -35,7 +43,15 @@ describe 'mysql::server' do
           context 'with defaults' do
             it { is_expected.to contain_service('mysqld') }
           end
-
+          context 'with package_manage set to true' do
+            let(:params) {{ :package_manage => true }}
+            it { is_expected.to contain_service('mysqld').that_requires('Package[mysql-server]') }
+          end
+          context 'with package_manage set to false' do
+            let(:params) {{ :package_manage => false }}
+            it { is_expected.to contain_service('mysqld') }
+            it { is_expected.not_to contain_service('mysqld').that_requires('Package[mysql-server]') }
+          end
           context 'service_enabled set to false' do
             let(:params) {{ :service_enabled => false }}
 
@@ -45,18 +61,53 @@ describe 'mysql::server' do
               })
             end
           end
+          context 'with log-error overridden' do
+            let(:params) {{ :override_options => { 'mysqld' => { 'log-error' => '/tmp/error.log' }} }}
+            it { is_expected.to contain_file('/tmp/error.log') }
+          end
         end
 
         context 'mysql::server::root_password' do
           describe 'when defaults' do
+            it {
+               is_expected.to contain_exec('remove install pass').with(
+                 :command => 'mysqladmin -u root --password=$(grep -o \'[^ ]\\+$\' /.mysql_secret) password \'\' && rm -f /.mysql_secret',
+                 :onlyif  => 'test -f /.mysql_secret',
+                 :path    => '/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin'
+               )
+             }
             it { is_expected.not_to contain_mysql_user('root@localhost') }
             it { is_expected.not_to contain_file('/root/.my.cnf') }
           end
-          describe 'when set' do
+          describe 'when root_password set' do
             let(:params) {{:root_password => 'SET' }}
             it { is_expected.to contain_mysql_user('root@localhost') }
+            it { is_expected.to contain_file('/root/.my.cnf').that_requires('Mysql_user[root@localhost]') }
+          end
+          describe 'when root_password set, create_root_user set to false' do
+            let(:params) {{ :root_password => 'SET', :create_root_user => false }}
+            it { is_expected.not_to contain_mysql_user('root@localhost') }
             it { is_expected.to contain_file('/root/.my.cnf') }
           end
+          describe 'when root_password set, create_root_my_cnf set to false' do
+            let(:params) {{ :root_password => 'SET', :create_root_my_cnf => false }}
+            it { is_expected.to contain_mysql_user('root@localhost') }
+            it { is_expected.not_to contain_file('/root/.my.cnf') }
+          end
+          describe 'when root_password set, create_root_user and create_root_my_cnf set to false' do
+            let(:params) {{ :root_password => 'SET', :create_root_user => false, :create_root_my_cnf => false }}
+            it { is_expected.not_to contain_mysql_user('root@localhost') }
+            it { is_expected.not_to contain_file('/root/.my.cnf') }
+          end
+          describe 'when install_secret_file set to /root/.mysql_secret' do
+            let(:params) {{ :install_secret_file => '/root/.mysql_secret' }}
+            it {
+              is_expected.to contain_exec('remove install pass').with(
+                 :command => 'mysqladmin -u root --password=$(grep -o \'[^ ]\\+$\' /root/.mysql_secret) password \'\' && rm -f /root/.mysql_secret',
+                 :onlyif  => 'test -f /root/.mysql_secret'
+              )
+            }
+          end 
         end
 
         context 'mysql::server::providers' do
@@ -83,7 +134,7 @@ describe 'mysql::server' do
               :max_queries_per_hour     => nil,
               :max_updates_per_hour     => nil,
               :max_user_connections     => nil,
-              :password_hash            => ''
+              :password_hash            => nil
             )}
           end
 

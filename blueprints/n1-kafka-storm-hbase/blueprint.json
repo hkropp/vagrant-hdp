@@ -1,0 +1,97 @@
+{
+	"Blueprints" : 
+		{
+    		"blueprint_name" : "n1-kafka-storm-hbase",
+    		"stack_name" : "HDP",
+    		"stack_version" : "2.3"
+    	},
+    "configurations": [
+        {
+            "hdfs-site": {
+                "dfs.replication": "1"
+            }
+        },{
+            "core-site": {
+                "hadoop.proxyuser.root.groups": "*",
+                "hadoop.proxyuser.root.hosts": "*",
+                "hadoop.proxyuser.hcat.groups": "*",
+                "hadoop.proxyuser.hcat.hosts": "*"
+            }
+        },{
+            "hive-site": {
+                "hive.execution.engine": "mr",
+                "hive.support.concurrency": "true",
+                "hive.txn.manager": "org.apache.hadoop.hive.ql.lockmgr.DbTxnManager",
+                "hive.compactor.initiator.on": "true",
+                "hive.compactor.worker.threads": "5",
+                "hive.support.concurrency": "true",
+                "javax.jdo.option.ConnectionDriverName": "com.mysql.jdbc.Driver",
+                "javax.jdo.option.ConnectionPassword": "hive123",
+                "javax.jdo.option.ConnectionURL": "jdbc:mysql://localhost/hive?createDatabaseIfNotExist=true",
+                "javax.jdo.option.ConnectionUserName": "hive"
+            }
+        },{
+            "hive-env": {
+                "hive_ambari_database": "MySQL",
+                "hive_database": "Existing MySQL Database",
+                "hive_database_type": "mysql"
+            }
+        },{
+            "kafka-broker" : {
+                "listeners" : "PLAINTEXT://one.hdp:6667",
+                "delete.topic.enable": "true"
+            }
+        },{
+            "hbase-site" :{
+                "hbase.hregion.memstore.block.multiplier" : "2",
+                "hbase.hregion.memstore.flush.size" : "134217728",
+                "zookeeper.session.timeout": "2400000",
+                "hbase.zookeeper.property.tickTime": "12000",
+                "hbase.cluster.distributed": "true",
+                "hbase.zookeeper.useMulti": "false"
+            }
+        },{
+            "hbase-env" : {
+                "hbase_regionserver_xmn_max" : "512",
+                "hbase_regionserver_heapsize" : "2048m",
+                "hbase_master_heapsize" : "3072m",
+                "hbase_regionserver_xmn_ratio" : "0.1"
+            }
+        }
+    ],
+    "host_groups" : [
+        {
+        "name" : "node_1",
+        "cardinality" : "1",
+            "components" : [
+                { "name": "NAMENODE" },
+                { "name": "SECONDARY_NAMENODE" },
+                { "name": "ZOOKEEPER_SERVER" },
+                { "name": "HIVE_METASTORE" },
+                { "name": "HIVE_SERVER" },
+                { "name": "APP_TIMELINE_SERVER" },
+                { "name": "NIMBUS" },
+                { "name": "STORM_UI_SERVER" },
+                { "name": "DRPC_SERVER" },
+                { "name": "KAFKA_BROKER" },
+                { "name": "HBASE_MASTER" },
+                { "name": "WEBHCAT_SERVER" },
+                { "name": "DATANODE" },
+                { "name": "NODEMANAGER" },
+                { "name": "SUPERVISOR" },
+                { "name": "HBASE_REGIONSERVER" },
+
+                { "name": "HDFS_CLIENT" },
+                { "name": "MAPREDUCE2_CLIENT" },
+                { "name": "YARN_CLIENT" },
+                { "name": "TEZ_CLIENT" },
+                { "name": "ZOOKEEPER_CLIENT" },
+                { "name": "HBASE_CLIENT"},
+                { "name": "HIVE_CLIENT"},
+                { "name": "ZOOKEEPER_CLIENT" },
+                { "name": "RESOURCEMANAGER" }, 
+                { "name": "HISTORYSERVER" }      
+            ]
+        }
+    ] 
+}

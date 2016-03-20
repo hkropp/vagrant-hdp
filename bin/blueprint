@@ -82,11 +82,11 @@ function install ()
   curl --user $AMBARI_USER:$AMBARI_USER_PASSWORD -H 'X-Requested-By:mycompany' -X POST "http://${AMBARI_HOST}:8080/api/v1/clusters/$CLUSTER_NAME" -d @${hostmapping_file}
 }
 
-function clean()
-{
+#function clean()
+#{
   #curl --user admin:admin -H 'X-Requested-By:mycompany' -X DELETE "http://localhost:8080/api/v1/blueprints/vagrant-hdp22-n1"
   #curl --user admin:admin -H 'X-Requested-By:mycompany' -X DELETE "http://localhost:8080/api/v1/clusters/hdp22"
-}
+#}
 
 if [[ $1=="inst" ]]; then
   install $2

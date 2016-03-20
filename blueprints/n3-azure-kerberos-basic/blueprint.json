@@ -1,7 +1,7 @@
 {
 	"Blueprints" : 
 		{
-    		"blueprint_name" : "vagrant-hdp22-n1",
+    		"blueprint_name" : "n3-azure-kerberos-basic",
     		"stack_name" : "HDP",
     		"stack_version" : "2.2"
     	},
@@ -51,52 +51,103 @@
     ],
 	"host_groups" : [
 		{ 
-		"name" : "master_slave_client_1",
-		"cardinality" : "1",
+		    "name" : "host_1",
+		    "cardinality" : "1",
       		"components" : [
       		    { "name": "NAMENODE" },
-                { "name": "SECONDARY_NAMENODE" },
                 { "name": "METRICS_COLLECTOR" },
-      		    { "name": "ZOOKEEPER_SERVER" },
+                { "name": "ZOOKEEPER_SERVER" },
                 { "name": "HIVE_METASTORE" },
-                { "name": "HIVE_SERVER" },
+                { "name": "HIVE_SERVER" }, 
                 { "name": "WEBHCAT_SERVER" },
-      		    { "name": "APP_TIMELINE_SERVER" },
-                { "name": "SPARK_JOBHISTORYSERVER" },
-                { "name": "NIMBUS" },
-                { "name": "STORM_UI_SERVER" },
-                { "name": "DRPC_SERVER" },
-                { "name": "KAFKA_BROKER" },
-                { "name": "FALCON_SERVER" },
-                { "name": "HBASE_MASTER" },
-                { "name" : "RANGER_USERSYNC" },
-                { "name" : "RANGER_ADMIN" },
-
-      			
-            	{ "name": "DATANODE" },
-            	{ "name": "NODEMANAGER" },
+                
+                { "name": "DATANODE" },
+                { "name": "NODEMANAGER" },
                 { "name": "SUPERVISOR" },
                 { "name": "METRICS_MONITOR" },
                 { "name": "FLUME_HANDLER" },
                 { "name": "HBASE_REGIONSERVER" },
-
-            	{ "name": "HDFS_CLIENT" },
+                
+                { "name": "HDFS_CLIENT" },
                 { "name": "SPARK_CLIENT" },
-            	{ "name": "MAPREDUCE2_CLIENT" },
-            	{ "name": "YARN_CLIENT" },
-            	{ "name": "TEZ_CLIENT" },
-            	{ "name": "ZOOKEEPER_CLIENT" },
+                { "name": "MAPREDUCE2_CLIENT" },
+                { "name": "YARN_CLIENT" },
+                { "name": "TEZ_CLIENT" },
+                { "name": "ZOOKEEPER_CLIENT" },
                 { "name": "HIVE_CLIENT"},
                 { "name": "HCAT" },
                 { "name": "SQOOP" },
                 { "name": "PIG" },
                 { "name": "HBASE_CLIENT"},
                 { "name": "FALCON_CLIENT" },
+                { "name": "ZOOKEEPER_CLIENT" }
+            ]
+        },{
+            "name": "host_2",
+            "cardinality": "1",
+            "components": [
+                { "name": "SECONDARY_NAMENODE" },
+                { "name": "APP_TIMELINE_SERVER" },
+                { "name": "SPARK_JOBHISTORYSERVER" },
+                { "name": "NIMBUS" },
+                { "name": "STORM_UI_SERVER" },
+                { "name": "DRPC_SERVER" },
 
-				{ "name": "ZOOKEEPER_CLIENT" },
-                { "name": "RESOURCEMANAGER" }, 
-      			{ "name": "HISTORYSERVER" }      
-        	]
+                { "name": "DATANODE" },
+                { "name": "NODEMANAGER" },
+                { "name": "SUPERVISOR" },
+                { "name": "METRICS_MONITOR" },
+                { "name": "FLUME_HANDLER" },
+                { "name": "HBASE_REGIONSERVER" },
+                  
+                { "name": "HDFS_CLIENT" },
+                { "name": "SPARK_CLIENT" },
+                { "name": "MAPREDUCE2_CLIENT" },
+                { "name": "YARN_CLIENT" },
+                { "name": "TEZ_CLIENT" },
+                { "name": "ZOOKEEPER_CLIENT" },
+                { "name": "HIVE_CLIENT"},
+                { "name": "HCAT" },
+                { "name": "SQOOP" },
+                { "name": "PIG" },
+                { "name": "HBASE_CLIENT"},
+                { "name": "FALCON_CLIENT" },
+                { "name": "ZOOKEEPER_CLIENT" }
+                
+            ]
+        },{
+            "name": "host_3",
+            "cardinality": "1",
+            "components": [
+                { "name": "KAFKA_BROKER" },
+                { "name": "FALCON_SERVER" },
+                { "name": "HBASE_MASTER" },
+                { "name" : "RANGER_USERSYNC" },
+                { "name" : "RANGER_ADMIN" }, 
+                { "name": "RESOURCEMANAGER" },
+                { "name": "HISTORYSERVER" },
+                
+                { "name": "DATANODE" },
+                { "name": "NODEMANAGER" },
+                { "name": "SUPERVISOR" },
+                { "name": "METRICS_MONITOR" },
+                { "name": "FLUME_HANDLER" },
+                { "name": "HBASE_REGIONSERVER" },
+   
+                { "name": "HDFS_CLIENT" },
+                { "name": "SPARK_CLIENT" },
+                { "name": "MAPREDUCE2_CLIENT" },
+                { "name": "YARN_CLIENT" },
+                { "name": "TEZ_CLIENT" },
+                { "name": "ZOOKEEPER_CLIENT" },
+                { "name": "HIVE_CLIENT"},
+                { "name": "HCAT" },
+                { "name": "SQOOP" },
+                { "name": "PIG" },
+                { "name": "HBASE_CLIENT"},
+                { "name": "FALCON_CLIENT" },
+                { "name": "ZOOKEEPER_CLIENT" }
+            ]
         }
     ] 
 }

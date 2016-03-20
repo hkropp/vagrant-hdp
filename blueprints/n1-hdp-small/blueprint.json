@@ -1,0 +1,45 @@
+{
+	"Blueprints" : 
+		{
+    		"blueprint_name" : "n1-hdp-small",
+    		"stack_name" : "HDP",
+    		"stack_version" : "2.3"
+    	},
+    "configurations": [
+        {
+            "nagios-env": {
+                "nagios_contact": "root@localhost",
+                "nagios_web_login": "nagiosadmin",
+                "nagios_web_password": "admin"
+            }
+        },{
+            "core-site": {
+                "hadoop.proxyuser.root.groups": "*",
+                "hadoop.proxyuser.root.hosts": "*",
+            }
+        }
+    ],
+	"host_groups" : [
+		{ 
+		"name" : "node_1",
+		"cardinality" : "1",
+      		"components" : [
+      		    { "name": "NAMENODE" },
+                { "name": "SECONDARY_NAMENODE" },
+      		    { "name": "ZOOKEEPER_SERVER" },
+      		    { "name": "APP_TIMELINE_SERVER" },
+            	{ "name": "DATANODE" },
+            	{ "name": "NODEMANAGER" },
+            	{ "name": "HDFS_CLIENT" },
+            	{ "name": "MAPREDUCE2_CLIENT" },
+            	{ "name": "YARN_CLIENT" },
+            	{ "name": "TEZ_CLIENT" },
+            	{ "name": "ZOOKEEPER_CLIENT" },
+                { "name": "HIVE_CLIENT"},
+		        { "name": "ZOOKEEPER_CLIENT" },
+                { "name": "RESOURCEMANAGER" }, 
+      		    { "name": "HISTORYSERVER" }      
+        	]
+        }
+    ] 
+}

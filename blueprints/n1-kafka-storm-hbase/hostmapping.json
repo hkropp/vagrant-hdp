@@ -1,0 +1,10 @@
+{
+	"blueprint":"n1-kafka-storm-hbase",
+	"default_password": "admin",
+	"host_groups":[
+		{ 
+			"name":"node_1",
+      		"hosts":[ { "fqdn":"one.hdp" } ] 
+		}
+	]
+}

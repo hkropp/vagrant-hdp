@@ -1,0 +1,10 @@
+{
+	"blueprint":"n1-spark-basic",
+	"default_password": "admin",
+	"host_groups":[
+		{ 
+			"name":"host_1",
+      		"hosts":[ { "fqdn":"one.hdp" } ] 
+		}
+	]
+}

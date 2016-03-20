@@ -1,10 +1,16 @@
 {
-	"blueprint":"vagrant-hdp22-n1",
+	"blueprint":"n3-azure-kerberos-basic",
 	"default_password": "admin",
 	"host_groups":[
 		{ 
-			"name":"master_slave_client_1",
-      		"hosts":[ { "fqdn":"one.hdp" } ] 
-		}
+			"name":"host_1",
+      		"hosts":[ { "fqdn":"n1-hwx-hdp22-demo.cloudapp.net" } ] 
+		},{
+            "name":"host_2",
+            "hosts":[ { "fqdn":"n2-hwx-hdp22-demo.cloudapp.net" } ] 
+        },{
+            "name":"host_3",
+            "hosts":[ { "fqdn":"n3-hwx-hdp22-demo.cloudapp.net" } ] 
+        }
 	]
 }
