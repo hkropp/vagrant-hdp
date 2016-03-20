@@ -116,34 +116,7 @@ msg = '''[ { "Clusters":
         "tag": "version1",
         "properties": {
             "conf_dir" : "/etc",
-            "content" : "\\n[libdefaults]\\n
-renew_lifetime = 7d\\n
-forwardable = true\\n
-default_realm = {{realm}}\\n
-ticket_lifetime = 24h\\n
-dns_lookup_realm = false\\n
-dns_lookup_kdc = false\\n
-#default_tgs_enctypes = {{encryption_types}}\\n
-#default_tkt_enctypes = {{encryption_types}}\\n
-\\n
-{% if domains %}\\n
-[domain_realm]\\n
-{% for domain in domains.split(',') %}\\n
-  {{domain}} = {{realm}}\\n
-{% endfor %}\\n
-{% endif %}\\n
-\\n
-[logging]\\n
-default = FILE:/var/log/krb5kdc.log\\n
-admin_server = FILE:/var/log/kadmind.log\\n
-kdc = FILE:/var/log/krb5kdc.log\\n
-\\n         
-[realms]\\n
-{{realm}} = {\\n
-  admin_server = {{admin_server_host|default(kdc_host, True)}}\\n
-  kdc = {{kdc_host}}\\n
-}\\n
-{# Append additional realm declarations below #}",
+            "content" : "",
             "domains" : "",
             "manage_krb5_conf" : "false"
         }
@@ -151,7 +124,7 @@ kdc = FILE:/var/log/krb5kdc.log\\n
 log_debug('krb5-conf msg: %s' % msg.replace('\n', ''))
 execute_request('PUT', '/api/v1/clusters/%s' % clustername, msg )
 
-''''
+
 msg = '''{"host_components" : [{"HostRoles" : {"component_name":"KERBEROS_CLIENT"}}]}'''
 for host in return_hosts():
   execute_request('POST', '/api/v1/clusters/%s/hosts?Hosts/host_name=%s' % (clustername, host["Hosts"]["host_name"]), msg )
@@ -165,7 +138,7 @@ execute_and_wait_completed('PUT', '/api/v1/clusters/%s/services' % clustername, 
 
 
 print "Enable Kerberos"
-msg = ''''''{
+msg = '''{
   "session_attributes" : {
     "kerberos_admin" : {
       "principal" : "%s", "password" : "%s" }
@@ -173,10 +146,9 @@ msg = ''''''{
     "Clusters": {
       "security_type" : "KERBEROS"
   }
-}'''''' % (principal, princ_password)
+}''' % (principal, princ_password)
 execute_and_wait_completed('PUT', '/api/v1/clusters/%s' % clustername, msg)
 
 print "Restart Cluster"
 msg = '{"ServiceInfo": {"state" : "STARTED"}}'
 execute_and_wait_completed('PUT', '/api/v1/clusters/%s/services' % clustername, msg)
-'''
