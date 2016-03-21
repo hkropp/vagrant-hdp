@@ -5,7 +5,7 @@ class hdp_setup::kerberize_cluster($ambarihostname='one.hdp', $blueprint_name='n
         path => ["/bin/", "/sbin/", "/usr/bin/", "/usr/sbin/"]
     }
     
-    exec { "/vagrant/bin/kerberize_cluster.py admin admin ${ambarihostname} 8080 ${krb5_kdc} ${krb5_realm} hdp/admin@MYCORP.NET hadoop": 
+    exec { "/vagrant/bin/kerberize_cluster.py admin admin ${ambarihostname} 8080 ${blueprint_name} ${krb5_kdc} ${krb5_realm} hdp/admin@MYCORP.NET hadoop": 
         timeout => 3600,
     }
 }   
