@@ -34,6 +34,13 @@ class {'hdp_setup::blueprint_install':
   blueprint_name => $blueprint_name,
 }
 
+class {'hdp_setup::kerberize_cluster':
+  ambarihostname => $ambarihostname,
+  blueprint_name => $blueprint_name,
+  krb5_kdc => $krb5_kdc,
+  krb5_realm => $krb5_realm,
+}
+
 # Establish ordering
 Class['interfering_services']
 -> Class['ntp'] 
@@ -49,3 +56,5 @@ Class['interfering_services']
 -> Class['hdp_setup::hdfs']
 -> Class['hdp_setup::phoenix']
 -> Class['ambari_services::zeppelin_service']
+-> Class['hdp_setup::kerberize_cluster']
+
