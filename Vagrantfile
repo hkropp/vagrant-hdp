@@ -75,7 +75,6 @@ if hdp_conf[:vagrant_provider] == "virtualbox"
                 puppet.environment_path = ENVIRONMENT_PATH
                 puppet.environment = opts[:node_env]
                 puppet.module_path = MODULES_PATH
-                #puppet.manifest_file = opts[:manifest_file].to_s
                 puppet.facter = {
                     "ownhostname" => opts[:name],
                     "ambarihostname" => AMBARI_HOST_NAME,

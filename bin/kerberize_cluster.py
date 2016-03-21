@@ -6,7 +6,7 @@ debug=True
 def log_debug(msg):
   if debug:
     print msg
-    
+
 def print_usage():
   print "Usage"
   print "kerberize_cluster.py %ambari_admin %ambari_admin_password %ambari_host %ambari_port %clustername %kdc_host %REALM %principal %principal_password"
@@ -34,7 +34,7 @@ log_debug('princ_password: %s' % princ_password)
 auth = base64.encodestring('%s:%s' % (amb_username, amb_password)).replace('\n','')
 log_debug('auth: %s' % auth)
 
-
+time.sleep(35) # waiting for ambari server to be up
 
 def execute_request(method, path, msg=''):
   log_debug('execute_request.method: %s' % method)
@@ -53,7 +53,6 @@ def execute_request(method, path, msg=''):
   print data
   return res, data
 
-  
 def execute_and_wait_completed(method, path, msg=''):
   req_res, req_res_data = execute_request(method, path, msg)
   log_debug("execute_and_wait_completed.req_res.status: %s, %s" % (req_res.status, req_res.reason))
@@ -61,20 +60,20 @@ def execute_and_wait_completed(method, path, msg=''):
   if len(req_res_data) == 0:
     return
   req_id = json.loads(req_res_data)["Requests"]["id"]
-  
-  limit=36
-  
+
+  limit=40
+
   for i in range(0, limit):
     log_debug('execute_and_wait_completed.id: %d' % req_id)
     status_req, status_req_data =  execute_request('GET', '/api/v1/clusters/%s/requests/%d' % (clustername, req_id) )
     log_debug("execute_and_wait_completed.status_req.status: %s, %s" % (status_req.status, status_req.reason))
     log_debug("execute_and_wait_completed.status_req_data: %s" % status_req_data)
-    status = json.loads(status_req_data)["Requests"]["request_status"] 
+    status = json.loads(status_req_data)["Requests"]["request_status"]
     if "COMPLETED" == status:
       break
     log_debug('... waiting for request to complete.')
     time.sleep(10)
-    
+
 def return_hosts():
   hosts_req, hosts_req_data = execute_request('GET', '/api/v1/clusters/%s/hosts' % clustername)
   host_items = json.loads(hosts_req_data)["items"]
@@ -110,8 +109,8 @@ log_debug('krb5-env msg: %s' % msg.replace('\n', ''))
 execute_request('PUT', '/api/v1/clusters/%s' % clustername, msg)
 
 print "Create krb5-conf"
-msg = '''[ { "Clusters": 
-    { "desired_config": { 
+msg = '''[ { "Clusters":
+    { "desired_config": {
         "type": "krb5-conf",
         "tag": "version1",
         "properties": {
