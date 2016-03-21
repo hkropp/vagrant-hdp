@@ -1,4 +1,4 @@
-class hdp_setup::blueprint_install($ambarihostname='one.hdp', $blueprint_name='n1-hdp-basic', $krb5_kdc='one.hdp', $krb5_realm='MYCORP.NET', ) {
+class hdp_setup::kerberize_cluster($ambarihostname='one.hdp', $blueprint_name='n1-hdp-basic', $krb5_kdc='one.hdp', $krb5_realm='MYCORP.NET', ) {
     include hdp_setup
     
     Exec {
